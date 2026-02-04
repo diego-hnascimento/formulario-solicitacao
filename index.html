@@ -656,9 +656,11 @@
                             <option value="">Selecione um CID-10</option>
                             <option value="prematuridade">Prematuridade</option>
                             <option value="cardiopatia-congenita">Cardiopatia congênita</option>
-                            <option value="imunocomprometidos-graves">Imunocomprometidos graves(inato ou adquirido)</option>
+                            <option value="imunocomprometidos-graves">Imunocomprometidos graves(inato ou adquirido)
+                            </option>
                             <option value="fibrose-cistica">Fibrose Cística</option>
-                            <option value="anomalias-congenitas-das-vias-aereas">Anomalias Congênitas das vias aéreas</option>
+                            <option value="anomalias-congenitas-das-vias-aereas">Anomalias Congênitas das vias aéreas
+                            </option>
                             <option value="doenca-pulmonar-cronica">Doença Pulmonar Crônica(broncodisplasia)</option>
                             <option value="sindrome-de-dowm">Síndrome de Dowm</option>
                             <option value="doenca-neuromuscular">Doença Neuromuscular</option>
@@ -689,7 +691,7 @@
 
                     <div class="form-group">
                         <label>Documento com Foto <span class="required">*</span></label>
-                        <div class="upload-area photo" id="upload-photo" name="file-photo"
+                        <div class="upload-area photo" id="upload-photo"
                             onclick="document.getElementById('file-photo').click()">
                             <div class="upload-icon">
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -699,7 +701,7 @@
                             </div>
                             <span class="upload-text">Clique para selecionar</span>
                             <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                            <input type="file" id="file-photo" class="file-input" accept="image/*,.pdf" required>
+                            <input type="file" id="file-photo" name="file-photo" class="file-input" accept="image/*,.pdf" required>
                             <div class="file-name" id="filename-photo" style="display: none;">
                                 <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
@@ -711,7 +713,7 @@
 
                     <div class="form-group">
                         <label>Comprovante de Residência <span class="required">*</span></label>
-                        <div class="upload-area residence" id="upload-residence" name="file-residence"
+                        <div class="upload-area residence" id="upload-residence" 
                             onclick="document.getElementById('file-residence').click()">
                             <div class="upload-icon">
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -720,7 +722,7 @@
                             </div>
                             <span class="upload-text">Clique para selecionar</span>
                             <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                            <input type="file" id="file-residence" class="file-input" accept="image/*,.pdf" required>
+                            <input type="file" id="file-residence" name="file-residence" class="file-input" accept="image/*,.pdf" required>
                             <div class="file-name" id="filename-residence" style="display: none;">
                                 <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
@@ -732,7 +734,7 @@
 
                     <div class="form-group">
                         <label>Laudo / Comprovante Médico <span class="required">*</span></label>
-                        <div class="upload-area medical" id="upload-medical" name="file-medical"
+                        <div class="upload-area medical" id="upload-medical" 
                             onclick="document.getElementById('file-medical').click()">
                             <div class="upload-icon">
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -742,7 +744,7 @@
                             </div>
                             <span class="upload-text">Clique para selecionar</span>
                             <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                            <input type="file" id="file-medical" class="file-input" accept="image/*,.pdf" required>
+                            <input type="file" id="file-medical" name="file-medical" class="file-input" accept="image/*,.pdf" required>
                             <div class="file-name" id="filename-medical" style="display: none;">
                                 <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
@@ -824,9 +826,9 @@
                         </div>
                     </div>
                 </div>
+            </form>
         </div>
     </div>
-    </form>
     <script>
         let currentStep = 1;
         const formData = {
