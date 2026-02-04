@@ -510,7 +510,7 @@
 </head>
 
 <body>
-    <form action="https://pei-pernambuco.app.n8n.cloud/webhook/formulario-de-solicitacao" method="post">
+    <form action="https://pei-pernambuco.app.n8n.cloud/webhook/formulario-de-solicitacao" method="post" enctype="multipart/form-data">
         <div class="container">
             <div class="header">
                 <div class="header-icon">
@@ -549,7 +549,7 @@
                         <p class="form-description">Preencha os dados do profissional responsável</p>
 
                         <div class="form-group">
-                            <label for="prof-fullname">Nome Completo <span class="required">*</span></label>
+                            <label for="prof-fullname">Nome do Profissional Solicitante <span class="required">*</span></label>
                             <input type="text" id="prof-fullname" name="prof-fullname"
                                 placeholder="Digite seu nome completo" required>
                             <div class="error-message" id="error-prof-fullname">Campo obrigatório</div>
@@ -557,14 +557,14 @@
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="prof-cpf">CPF <span class="required">*</span></label>
-                                <input type="text" id="prof-cpf" name="prof-cp" placeholder="000.000.000-00"
+                                <label for="prof-cpf">CPF do Profissional Solicitante <span class="required">*</span></label>
+                                <input type="text" id="prof-cpf" name="prof-cpf" placeholder="000.000.000-00"
                                     maxlength="14" required>
                                 <div class="error-message" id="error-prof-cpf">CPF inválido</div>
                             </div>
                             <div class="form-group">
                                 <label for="prof-email">E-mail <span class="required">*</span></label>
-                                <input type="email" id="prof-email" placeholder="seu.email@exemplo.com" required>
+                                <input type="email" id="prof-email" name="prof-email" placeholder="seu.email@exemplo.com" required>
                                 <div class="error-message" id="error-prof-email">E-mail inválido</div>
                             </div>
                         </div>
@@ -572,12 +572,12 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="prof-phone">Telefone <span class="required">*</span></label>
-                                <input type="tel" id="prof-phone" placeholder="(00) 00000-0000" required>
+                                <input type="tel" id="prof-phone" name="prof-phone" placeholder="(00) 00000-0000" required>
                                 <div class="error-message" id="error-prof-phone">Telefone inválido</div>
                             </div>
                             <div class="form-group">
                                 <label for="prof-region">Região de Saúde <span class="required">*</span></label>
-                                <select id="prof-region" required>
+                                <select id="prof-region" name="prof-region" required>
                                     <option value="">Selecione uma região</option>
                                     <option value="primeira">1</option>
                                     <option value="segunda">2</option>
@@ -598,7 +598,7 @@
 
                         <div class="form-group">
                             <label for="prof-municipality">Município <span class="required">*</span></label>
-                            <input type="text" id="prof-municipality" placeholder="Digite o município" required>
+                            <input type="text" id="prof-municipality" name="prof-municipality" placeholder="Digite o município" required>
                             <div class="error-message" id="error-prof-municipality">Campo obrigatório</div>
                         </div>
 
@@ -619,7 +619,7 @@
 
                         <div class="form-group">
                             <label for="patient-fullname">Nome Completo <span class="required">*</span></label>
-                            <input type="text" id="patient-fullname" placeholder="Digite o nome completo do paciente"
+                            <input type="text" id="patient-fullname" name="patient-fullname" placeholder="Digite o nome completo do paciente"
                                 required>
                             <div class="error-message" id="error-patient-fullname">Campo obrigatório</div>
                         </div>
@@ -627,14 +627,14 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="patient-cpf">CPF <span class="required">*</span></label>
-                                <input type="text" id="patient-cpf" placeholder="000.000.000-00" maxlength="14"
+                                <input type="text" id="patient-cpf" name="patient-cpf" placeholder="000.000.000-00" maxlength="14"
                                     required>
                                 <div class="error-message" id="error-patient-cpf">CPF inválido</div>
                             </div>
                             <div class="form-group">
                                 <label for="patient-birthdate">Data de Nascimento <span
                                         class="required">*</span></label>
-                                <input type="date" id="patient-birthdate" required>
+                                <input type="date" id="patient-birthdate" name="patient-birthdate" required>
                                 <div class="error-message" id="error-patient-birthdate">Data inválida</div>
                             </div>
                         </div>
@@ -642,14 +642,14 @@
                         <div class="form-group">
                             <label for="patient-municipality">Município de Residência <span
                                     class="required">*</span></label>
-                            <input type="text" id="patient-municipality" placeholder="Digite o município" required>
+                            <input type="text" id="patient-municipality" name="patient-municipality" placeholder="Digite o município" required>
                             <div class="error-message" id="error-patient-municipality">Campo obrigatório</div>
                         </div>
 
                         <div class="form-group">
                             <label for="patient-condition">Situação Médica/Comorbidade <span
                                     class="required">*</span></label>
-                            <textarea id="patient-condition"
+                            <textarea id="patient-condition" name="patient-condition"
                                 placeholder="Descreva a situação médica ou comorbidade do paciente" required></textarea>
                             <div class="error-message" id="error-patient-condition">Campo obrigatório</div>
                         </div>
@@ -677,7 +677,7 @@
 
                         <div class="form-group">
                             <label>Documento com Foto <span class="required">*</span></label>
-                            <div class="upload-area photo" id="upload-photo"
+                            <div class="upload-area photo" id="upload-photo" name="upload-photo"
                                 onclick="document.getElementById('file-photo').click()">
                                 <div class="upload-icon">
                                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -699,7 +699,7 @@
 
                         <div class="form-group">
                             <label>Comprovante de Residência <span class="required">*</span></label>
-                            <div class="upload-area residence" id="upload-residence"
+                            <div class="upload-area residence" id="upload-residence" name="upload-residence"
                                 onclick="document.getElementById('file-residence').click()">
                                 <div class="upload-icon">
                                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -721,7 +721,7 @@
 
                         <div class="form-group">
                             <label>Laudo / Comprovante Médico <span class="required">*</span></label>
-                            <div class="upload-area medical" id="upload-medical"
+                            <div class="upload-area medical" id="upload-medical" name="upload-medical"
                                 onclick="document.getElementById('file-medical').click()">
                                 <div class="upload-icon">
                                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1010,18 +1010,34 @@
 
             saveCurrentStepData();
 
-            console.log('Dados do Formulário:', formData);
+            // Captura o formulário
+            const formElement = document.querySelector('form');
+            const formDataObj = new FormData(formElement);
 
-            currentStep = 4;
-            updateUI();
+            // Envia os dados via fetch para não sair da página
+            fetch(formElement.action, {
+                method: 'POST',
+                body: formDataObj
+            }).then(response => {
+                if (response.ok) {
+                    // Se o n8n recebeu, mostra a tela de sucesso
+                    currentStep = 4;
+                    updateUI();
 
-            const protocolNumber = generateProtocolNumber();
-            const currentDate = new Date().toLocaleDateString('pt-BR');
+                    const protocolNumber = generateProtocolNumber();
+                    const currentDate = new Date().toLocaleDateString('pt-BR');
 
-            document.getElementById('protocol-number').textContent = protocolNumber;
-            document.getElementById('confirmation-prof-name').textContent = formData.professional.fullName;
-            document.getElementById('confirmation-patient-name').textContent = formData.patient.fullName;
-            document.getElementById('confirmation-date').textContent = currentDate;
+                    document.getElementById('protocol-number').textContent = protocolNumber;
+                    document.getElementById('confirmation-prof-name').textContent = formData.professional.fullName;
+                    document.getElementById('confirmation-patient-name').textContent = formData.patient.fullName;
+                    document.getElementById('confirmation-date').textContent = currentDate;
+                } else {
+                    alert("Erro ao enviar para o servidor. Verifique o n8n.");
+                }
+            }).catch(error => {
+                console.error('Erro:', error);
+                alert("Erro de conexão.");
+            });
         }
 
         function generateProtocolNumber() {
