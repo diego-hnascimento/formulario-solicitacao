@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -132,6 +133,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -419,6 +421,7 @@
                 transform: scale(0.5);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1);
                 opacity: 1;
@@ -505,294 +508,314 @@
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="header-icon">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
-                </svg>
+    <form action="https://pei-pernambuco.app.n8n.cloud/webhook/formulario-de-solicitacao" method="post">
+        <div class="container">
+            <div class="header">
+                <div class="header-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
+                    </svg>
+                </div>
+                <h1>Formulário de Solicitação de Vacinação</h1>
+                <p class="subtitle">Preencha os dados necessários para solicitar a vacinação</p>
             </div>
-            <h1>Formulário de Solicitação de Vacinação</h1>
-            <p class="subtitle">Preencha os dados necessários para solicitar a vacinação</p>
+
+            <div class="progress-container">
+                <div class="progress-step">
+                    <div class="progress-circle active" id="step-1-circle">1</div>
+                    <div class="progress-label active" id="step-1-label">Profissional</div>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-circle" id="step-2-circle">2</div>
+                    <div class="progress-label" id="step-2-label">Paciente</div>
+                </div>
+                <div class="progress-step">
+                    <div class="progress-circle" id="step-3-circle">3</div>
+                    <div class="progress-label" id="step-3-label">Documentação</div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="success-message" id="successMessage">
+                    Formulário enviado com sucesso! Sua solicitação foi registrada.
+                </div>
+                <form action="https://pei-pernambuco.app.n8n.cloud/webhook/formulario-de-solicitacao" method="POST">
+                    <!-- FORM SECTION 1: PROFESSIONAL -->
+                    <div class="form-section active" id="section-1">
+                        <h2 class="form-title">Dados do Profissional Solicitante</h2>
+                        <p class="form-description">Preencha os dados do profissional responsável</p>
+
+                        <div class="form-group">
+                            <label for="prof-fullname">Nome Completo <span class="required">*</span></label>
+                            <input type="text" id="prof-fullname" name="prof-fullname"
+                                placeholder="Digite seu nome completo" required>
+                            <div class="error-message" id="error-prof-fullname">Campo obrigatório</div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-cpf">CPF <span class="required">*</span></label>
+                                <input type="text" id="prof-cpf" name="prof-cp" placeholder="000.000.000-00"
+                                    maxlength="14" required>
+                                <div class="error-message" id="error-prof-cpf">CPF inválido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-email">E-mail <span class="required">*</span></label>
+                                <input type="email" id="prof-email" placeholder="seu.email@exemplo.com" required>
+                                <div class="error-message" id="error-prof-email">E-mail inválido</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-phone">Telefone <span class="required">*</span></label>
+                                <input type="tel" id="prof-phone" placeholder="(00) 00000-0000" required>
+                                <div class="error-message" id="error-prof-phone">Telefone inválido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-region">Região de Saúde <span class="required">*</span></label>
+                                <select id="prof-region" required>
+                                    <option value="">Selecione uma região</option>
+                                    <option value="primeira">1</option>
+                                    <option value="segunda">2</option>
+                                    <option value="terceira">3</option>
+                                    <option value="quarta">4</option>
+                                    <option value="quinta">5</option>
+                                    <option value="sexta">6</option>
+                                    <option value="setima">7</option>
+                                    <option value="oitava">8</option>
+                                    <option value="nona">9</option>
+                                    <option value="decima">10</option>
+                                    <option value="decima-primeira">11</option>
+                                    <option value="decima-segunda">12</option>
+                                </select>
+                                <div class="error-message" id="error-prof-region">Campo obrigatório</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prof-municipality">Município <span class="required">*</span></label>
+                            <input type="text" id="prof-municipality" placeholder="Digite o município" required>
+                            <div class="error-message" id="error-prof-municipality">Campo obrigatório</div>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="button" class="btn-primary btn-next" onclick="goToStep(2)">
+                                Próximo
+                                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.59 16.59L10 18l8-8-8-8-1.41 1.41L14.17 9H6v2h8.17L8.59 16.59z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FORM SECTION 2: PATIENT -->
+                    <div class="form-section" id="section-2">
+                        <h2 class="form-title">Dados do Paciente</h2>
+                        <p class="form-description">Preencha os dados do paciente a ser vacinado</p>
+
+                        <div class="form-group">
+                            <label for="patient-fullname">Nome Completo <span class="required">*</span></label>
+                            <input type="text" id="patient-fullname" placeholder="Digite o nome completo do paciente"
+                                required>
+                            <div class="error-message" id="error-patient-fullname">Campo obrigatório</div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="patient-cpf">CPF <span class="required">*</span></label>
+                                <input type="text" id="patient-cpf" placeholder="000.000.000-00" maxlength="14"
+                                    required>
+                                <div class="error-message" id="error-patient-cpf">CPF inválido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="patient-birthdate">Data de Nascimento <span
+                                        class="required">*</span></label>
+                                <input type="date" id="patient-birthdate" required>
+                                <div class="error-message" id="error-patient-birthdate">Data inválida</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="patient-municipality">Município de Residência <span
+                                    class="required">*</span></label>
+                            <input type="text" id="patient-municipality" placeholder="Digite o município" required>
+                            <div class="error-message" id="error-patient-municipality">Campo obrigatório</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="patient-condition">Situação Médica/Comorbidade <span
+                                    class="required">*</span></label>
+                            <textarea id="patient-condition"
+                                placeholder="Descreva a situação médica ou comorbidade do paciente" required></textarea>
+                            <div class="error-message" id="error-patient-condition">Campo obrigatório</div>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="button" class="btn-secondary" onclick="goToStep(1)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15.41 7.41L14 6l-8 8 8 8 1.41-1.41L9.83 15H20v-2H9.83l5.58-5.59z" />
+                                </svg>
+                                Anterior
+                            </button>
+                            <button type="button" class="btn-primary" onclick="goToStep(3)">
+                                Próximo
+                                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.59 16.59L10 18l8-8-8-8-1.41 1.41L14.17 9H6v2h8.17L8.59 16.59z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FORM SECTION 3: DOCUMENTATION -->
+                    <div class="form-section" id="section-3">
+                        <h2 class="form-title">Documentação</h2>
+                        <p class="form-description">Anexe os documentos necessários para completar a solicitação</p>
+
+                        <div class="form-group">
+                            <label>Documento com Foto <span class="required">*</span></label>
+                            <div class="upload-area photo" id="upload-photo"
+                                onclick="document.getElementById('file-photo').click()">
+                                <div class="upload-icon">
+                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                                    </svg>
+                                </div>
+                                <span class="upload-text">Clique para selecionar</span>
+                                <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                                <input type="file" id="file-photo" class="file-input" accept="image/*,.pdf" required>
+                                <div class="file-name" id="filename-photo" style="display: none;">
+                                    <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                    </svg>
+                                    <span id="filename-photo-text"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Comprovante de Residência <span class="required">*</span></label>
+                            <div class="upload-area residence" id="upload-residence"
+                                onclick="document.getElementById('file-residence').click()">
+                                <div class="upload-icon">
+                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                                    </svg>
+                                </div>
+                                <span class="upload-text">Clique para selecionar</span>
+                                <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                                <input type="file" id="file-residence" class="file-input" accept="image/*,.pdf"
+                                    required>
+                                <div class="file-name" id="filename-residence" style="display: none;">
+                                    <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                    </svg>
+                                    <span id="filename-residence-text"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Laudo / Comprovante Médico <span class="required">*</span></label>
+                            <div class="upload-area medical" id="upload-medical"
+                                onclick="document.getElementById('file-medical').click()">
+                                <div class="upload-icon">
+                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z" />
+                                        <path d="M16 18H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V8h8v2z" />
+                                    </svg>
+                                </div>
+                                <span class="upload-text">Clique para selecionar</span>
+                                <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                                <input type="file" id="file-medical" class="file-input" accept="image/*,.pdf" required>
+                                <div class="file-name" id="filename-medical" style="display: none;">
+                                    <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                    </svg>
+                                    <span id="filename-medical-text"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="button" class="btn-secondary" onclick="goToStep(2)">
+                                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M15.41 7.41L14 6l-8 8 8 8 1.41-1.41L9.83 15H20v-2H9.83l5.58-5.59z" />
+                                </svg>
+                                Anterior
+                            </button>
+                            <button type="button" class="btn-primary" onclick="submitForm()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2z" />
+                                    <path d="M11 3L5.5 8.5l1.42 1.41L11 5.83V15h2V5.83l4.08 4.08L18.5 8.5z" />
+                                </svg>
+                                Enviar Solicitação
+                            </button>
+                        </div>
+                    </div>
+                    <!-- FORM SECTION 4: CONFIRMATION -->
+                    <div class="form-section" id="section-4">
+                        <div class="confirmation-container">
+                            <div class="confirmation-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                </svg>
+                            </div>
+                            <h2 class="confirmation-title">Solicitação Enviada!</h2>
+                            <p class="confirmation-text">
+                                Seu formulário de solicitação de vacinação foi enviado com sucesso. Um número de
+                                protocolo foi
+                                gerado para acompanhar sua solicitação.
+                            </p>
+
+                            <div class="confirmation-details">
+                                <h3>Dados da Solicitação</h3>
+                                <div class="confirmation-detail-row">
+                                    <span class="confirmation-detail-label">Número de Protocolo:</span>
+                                    <span class="confirmation-detail-value" id="protocol-number"></span>
+                                </div>
+                                <div class="confirmation-detail-row">
+                                    <span class="confirmation-detail-label">Profissional Solicitante:</span>
+                                    <span class="confirmation-detail-value" id="confirmation-prof-name"></span>
+                                </div>
+                                <div class="confirmation-detail-row">
+                                    <span class="confirmation-detail-label">Paciente:</span>
+                                    <span class="confirmation-detail-value" id="confirmation-patient-name"></span>
+                                </div>
+                                <div class="confirmation-detail-row">
+                                    <span class="confirmation-detail-label">Data de Envio:</span>
+                                    <span class="confirmation-detail-value" id="confirmation-date"></span>
+                                </div>
+                                <div class="confirmation-detail-row">
+                                    <span class="confirmation-detail-label">Status:</span>
+                                    <span class="confirmation-detail-value" style="color: #10b981;">Pendente de
+                                        Análise</span>
+                                </div>
+                            </div>
+
+                            <p class="confirmation-text" style="font-size: 0.95rem; color: #6b7280;">
+                                Você receberá uma confirmação por e-mail com todos os detalhes da sua solicitação e
+                                instruções
+                                para acompanhar o status.
+                            </p>
+
+                            <div class="confirmation-buttons">
+                                <button type="button" class="btn-restart" onclick="startNewForm()">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+                                    </svg>
+                                    Nova Solicitação
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
         </div>
-
-        <div class="progress-container">
-            <div class="progress-step">
-                <div class="progress-circle active" id="step-1-circle">1</div>
-                <div class="progress-label active" id="step-1-label">Profissional</div>
-            </div>
-            <div class="progress-step">
-                <div class="progress-circle" id="step-2-circle">2</div>
-                <div class="progress-label" id="step-2-label">Paciente</div>
-            </div>
-            <div class="progress-step">
-                <div class="progress-circle" id="step-3-circle">3</div>
-                <div class="progress-label" id="step-3-label">Documentação</div>
-            </div>
-        </div>
-
-        <div class="form-card">
-            <div class="success-message" id="successMessage">
-                Formulário enviado com sucesso! Sua solicitação foi registrada.
-            </div>
-
-            <!-- FORM SECTION 1: PROFESSIONAL -->
-            <div class="form-section active" id="section-1">
-                <h2 class="form-title">Dados do Profissional Solicitante</h2>
-                <p class="form-description">Preencha os dados do profissional responsável</p>
-
-                <div class="form-group">
-                    <label for="prof-fullname">Nome Completo <span class="required">*</span></label>
-                    <input type="text" id="prof-fullname" name="prof-fullname" placeholder="Digite seu nome completo" required>
-                    <div class="error-message" id="error-prof-fullname">Campo obrigatório</div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="prof-cpf">CPF <span class="required">*</span></label>
-                        <input type="text" id="prof-cpf" name="prof-cp" placeholder="000.000.000-00" maxlength="14" required>
-                        <div class="error-message" id="error-prof-cpf">CPF inválido</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="prof-email">E-mail <span class="required">*</span></label>
-                        <input type="email" id="prof-email" placeholder="seu.email@exemplo.com" required>
-                        <div class="error-message" id="error-prof-email">E-mail inválido</div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="prof-phone">Telefone <span class="required">*</span></label>
-                        <input type="tel" id="prof-phone" placeholder="(00) 00000-0000" required>
-                        <div class="error-message" id="error-prof-phone">Telefone inválido</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="prof-region">Região de Saúde <span class="required">*</span></label>
-                        <select id="prof-region" required>
-                            <option value="">Selecione uma região</option>
-                            <option value="primeira">1</option>
-                            <option value="segunda">2</option>
-                            <option value="terceira">3</option>
-                            <option value="quarta">4</option>
-                            <option value="quinta">5</option>
-                            <option value="sexta">6</option>
-                            <option value="setima">7</option>
-                            <option value="oitava">8</option>
-                            <option value="nona">9</option>
-                            <option value="decima">10</option>
-                            <option value="decima-primeira">11</option>
-                            <option value="decima-segunda">12</option>
-                        </select>
-                        <div class="error-message" id="error-prof-region">Campo obrigatório</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="prof-municipality">Município <span class="required">*</span></label>
-                    <input type="text" id="prof-municipality" placeholder="Digite o município" required>
-                    <div class="error-message" id="error-prof-municipality">Campo obrigatório</div>
-                </div>
-
-                <div class="button-group">
-                    <button type="button" class="btn-primary btn-next" onclick="goToStep(2)">
-                        Próximo
-                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8.59 16.59L10 18l8-8-8-8-1.41 1.41L14.17 9H6v2h8.17L8.59 16.59z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- FORM SECTION 2: PATIENT -->
-            <div class="form-section" id="section-2">
-                <h2 class="form-title">Dados do Paciente</h2>
-                <p class="form-description">Preencha os dados do paciente a ser vacinado</p>
-
-                <div class="form-group">
-                    <label for="patient-fullname">Nome Completo <span class="required">*</span></label>
-                    <input type="text" id="patient-fullname" placeholder="Digite o nome completo do paciente" required>
-                    <div class="error-message" id="error-patient-fullname">Campo obrigatório</div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="patient-cpf">CPF <span class="required">*</span></label>
-                        <input type="text" id="patient-cpf" placeholder="000.000.000-00" maxlength="14" required>
-                        <div class="error-message" id="error-patient-cpf">CPF inválido</div>
-                    </div>
-                    <div class="form-group">
-                        <label for="patient-birthdate">Data de Nascimento <span class="required">*</span></label>
-                        <input type="date" id="patient-birthdate" required>
-                        <div class="error-message" id="error-patient-birthdate">Data inválida</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="patient-municipality">Município de Residência <span class="required">*</span></label>
-                    <input type="text" id="patient-municipality" placeholder="Digite o município" required>
-                    <div class="error-message" id="error-patient-municipality">Campo obrigatório</div>
-                </div>
-
-                <div class="form-group">
-                    <label for="patient-condition">Situação Médica/Comorbidade <span class="required">*</span></label>
-                    <textarea id="patient-condition" placeholder="Descreva a situação médica ou comorbidade do paciente" required></textarea>
-                    <div class="error-message" id="error-patient-condition">Campo obrigatório</div>
-                </div>
-
-                <div class="button-group">
-                    <button type="button" class="btn-secondary" onclick="goToStep(1)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15.41 7.41L14 6l-8 8 8 8 1.41-1.41L9.83 15H20v-2H9.83l5.58-5.59z"/>
-                        </svg>
-                        Anterior
-                    </button>
-                    <button type="button" class="btn-primary" onclick="goToStep(3)">
-                        Próximo
-                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8.59 16.59L10 18l8-8-8-8-1.41 1.41L14.17 9H6v2h8.17L8.59 16.59z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- FORM SECTION 3: DOCUMENTATION -->
-            <div class="form-section" id="section-3">
-                <h2 class="form-title">Documentação</h2>
-                <p class="form-description">Anexe os documentos necessários para completar a solicitação</p>
-
-                <div class="form-group">
-                    <label>Documento com Foto <span class="required">*</span></label>
-                    <div class="upload-area photo" id="upload-photo" onclick="document.getElementById('file-photo').click()">
-                        <div class="upload-icon">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                            </svg>
-                        </div>
-                        <span class="upload-text">Clique para selecionar</span>
-                        <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                        <input type="file" id="file-photo" class="file-input" accept="image/*,.pdf" required>
-                        <div class="file-name" id="filename-photo" style="display: none;">
-                            <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                            </svg>
-                            <span id="filename-photo-text"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Comprovante de Residência <span class="required">*</span></label>
-                    <div class="upload-area residence" id="upload-residence" onclick="document.getElementById('file-residence').click()">
-                        <div class="upload-icon">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                            </svg>
-                        </div>
-                        <span class="upload-text">Clique para selecionar</span>
-                        <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                        <input type="file" id="file-residence" class="file-input" accept="image/*,.pdf" required>
-                        <div class="file-name" id="filename-residence" style="display: none;">
-                            <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                            </svg>
-                            <span id="filename-residence-text"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Laudo / Comprovante Médico <span class="required">*</span></label>
-                    <div class="upload-area medical" id="upload-medical" onclick="document.getElementById('file-medical').click()">
-                        <div class="upload-icon">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"/>
-                                <path d="M16 18H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V8h8v2z"/>
-                            </svg>
-                        </div>
-                        <span class="upload-text">Clique para selecionar</span>
-                        <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                        <input type="file" id="file-medical" class="file-input" accept="image/*,.pdf" required>
-                        <div class="file-name" id="filename-medical" style="display: none;">
-                            <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                            </svg>
-                            <span id="filename-medical-text"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="button-group">
-                    <button type="button" class="btn-secondary" onclick="goToStep(2)">
-                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M15.41 7.41L14 6l-8 8 8 8 1.41-1.41L9.83 15H20v-2H9.83l5.58-5.59z"/>
-                        </svg>
-                        Anterior
-                    </button>
-                    <button type="button" class="btn-primary" onclick="submitForm()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2z"/>
-                            <path d="M11 3L5.5 8.5l1.42 1.41L11 5.83V15h2V5.83l4.08 4.08L18.5 8.5z"/>
-                        </svg>
-                        Enviar Solicitação
-                    </button>
-                </div>
-            </div>
-
-            <!-- FORM SECTION 4: CONFIRMATION -->
-            <div class="form-section" id="section-4">
-                <div class="confirmation-container">
-                    <div class="confirmation-icon">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                        </svg>
-                    </div>
-                    <h2 class="confirmation-title">Solicitação Enviada!</h2>
-                    <p class="confirmation-text">
-                        Seu formulário de solicitação de vacinação foi enviado com sucesso. Um número de protocolo foi gerado para acompanhar sua solicitação.
-                    </p>
-
-                    <div class="confirmation-details">
-                        <h3>Dados da Solicitação</h3>
-                        <div class="confirmation-detail-row">
-                            <span class="confirmation-detail-label">Número de Protocolo:</span>
-                            <span class="confirmation-detail-value" id="protocol-number"></span>
-                        </div>
-                        <div class="confirmation-detail-row">
-                            <span class="confirmation-detail-label">Profissional Solicitante:</span>
-                            <span class="confirmation-detail-value" id="confirmation-prof-name"></span>
-                        </div>
-                        <div class="confirmation-detail-row">
-                            <span class="confirmation-detail-label">Paciente:</span>
-                            <span class="confirmation-detail-value" id="confirmation-patient-name"></span>
-                        </div>
-                        <div class="confirmation-detail-row">
-                            <span class="confirmation-detail-label">Data de Envio:</span>
-                            <span class="confirmation-detail-value" id="confirmation-date"></span>
-                        </div>
-                        <div class="confirmation-detail-row">
-                            <span class="confirmation-detail-label">Status:</span>
-                            <span class="confirmation-detail-value" style="color: #10b981;">Pendente de Análise</span>
-                        </div>
-                    </div>
-
-                    <p class="confirmation-text" style="font-size: 0.95rem; color: #6b7280;">
-                        Você receberá uma confirmação por e-mail com todos os detalhes da sua solicitação e instruções para acompanhar o status.
-                    </p>
-
-                    <div class="confirmation-buttons">
-                        <button type="button" class="btn-restart" onclick="startNewForm()">
-                            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
-                            </svg>
-                            Nova Solicitação
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    </form>
     <script>
         let currentStep = 1;
         const formData = {
@@ -1088,4 +1111,5 @@
         });
     </script>
 </body>
+
 </html>
