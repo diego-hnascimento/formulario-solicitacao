@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Solicitação de Vacinação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecf0f1 50%, #e0f2fe 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-icon {
+            background-color: #0d9488;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 25px rgba(13, 148, 136, 0.2);
+        }
+
+        .header-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: white;
+            stroke-width: 2;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .progress-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+        }
+
+        .progress-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #6b7280;
+            margin: 0 auto 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .progress-circle.active {
+            background-color: #0d9488;
+            border-color: #0d9488;
+            color: white;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1);
+        }
+
+        .progress-circle.completed {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .progress-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .progress-label.active {
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-description {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .required {
+            color: #ef4444;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            background-color: #f9fafb;
+        }
+
+        .upload-area:hover {
+            border-color: #0d9488;
+            background-color: #f0fdf4;
+        }
+
+        .upload-area.has-file {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #e0f2fe;
+        }
+
+        .upload-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: #0369a1;
+            stroke-width: 2;
+        }
+
+        .upload-area.photo .upload-icon {
+            background-color: #ccfbf1;
+        }
+
+        .upload-area.photo .upload-icon svg {
+            stroke: #0d9488;
+        }
+
+        .upload-area.residence .upload-icon {
+            background-color: #dbeafe;
+        }
+
+        .upload-area.residence .upload-icon svg {
+            stroke: #0369a1;
+        }
+
+        .upload-area.medical .upload-icon {
+            background-color: #dcfce7;
+        }
+
+        .upload-area.medical .upload-icon svg {
+            stroke: #16a34a;
+        }
+
+        .upload-text {
+            color: #0d9488;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .upload-subtext {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background-color: #ecfdf5;
+            border-left: 4px solid #10b981;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            color: #047857;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .check-icon {
+            width: 16px;
+            height: 16px;
+            stroke: #10b981;
+            stroke-width: 2;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        button {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+
+        .btn-primary {
+            background-color: #0d9488;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #0f766e;
+            box-shadow: 0 20px 25px -5px rgba(13, 148, 136, 0.3);
+        }
+
+        .btn-next {
+            margin-left: auto;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        input.error,
+        select.error,
+        textarea.error {
+            border-color: #dc2626;
+        }
+
+        .success-message {
+            background-color: #ecfdf5;
+            border: 1px solid #10b981;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            color: #047857;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        svg {
+            fill: none;
+        }
+
+        .confirmation-container {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .confirmation-icon {
+            width: 100px;
+            height: 100px;
+            background-color: #ecfdf5;
+            border: 4px solid #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .confirmation-icon svg {
+            width: 60px;
+            height: 60px;
+            stroke: #10b981;
+            stroke-width: 2;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .confirmation-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #047857;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-text {
+            color: #6b7280;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .confirmation-details {
+            background-color: #f0fdf4;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: left;
+            margin: 2rem 0;
+        }
+
+        .confirmation-details h3 {
+            color: #047857;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #d1fce7;
+            font-size: 0.95rem;
+        }
+
+        .confirmation-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .confirmation-detail-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .confirmation-detail-value {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-restart {
+            background-color: #0d9488;
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2);
+        }
+
+        .btn-restart:hover {
+            background-color: #0f766e;
+            box-shadow: 0 20px 25px -5px rgba(13, 148, 136, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
+                </svg>
+            </div>
+            <h1>Formulário de Solicitação de Vacinação</h1>
+            <p class="subtitle">Preencha os dados necessários para solicitar a vacinação</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-step">
+                <div class="progress-circle active" id="step-1-circle">1</div>
+                <div class="progress-label active" id="step-1-label">Profissional</div>
+            </div>
+            <div class="progress-step">
+                <div class="progress-circle" id="step-2-circle">2</div>
+                <div class="progress-label" id="step-2-label">Paciente</div>
+            </div>
+            <div class="progress-step">
+                <div class="progress-circle" id="step-3-circle">3</div>
+                <div class="progress-label" id="step-3-label">Documentação</div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <div class="success-message" id="successMessage">
+                Formulário enviado com sucesso! Sua solicitação foi registrada.
+            </div>
+
+            <!-- FORM SECTION 1: PROFESSIONAL -->
+            <div class="form-section active" id="section-1">
+                <h2 class="form-title">Dados do Profissional Solicitante</h2>
+                <p class="form-description">Preencha os dados do profissional responsável</p>
+
+                <div class="form-group">
+                    <label for="prof-fullname">Nome Completo <span class="required">*</span></label>
+                    <input type="text" id="prof-fullname" name="prof-fullname" placeholder="Digite seu nome completo" required>
+                    <div class="error-message" id="error-prof-fullname">Campo obrigatório</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prof-cpf">CPF <span class="required">*</span></label>
+                        <input type="text" id="prof-cpf" name="prof-cp" placeholder="000.000.000-00" maxlength="14" required>
+                        <div class="error-message" id="error-prof-cpf">CPF inválido</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="prof-email">E-mail <span class="required">*</span></label>
+                        <input type="email" id="prof-email" placeholder="seu.email@exemplo.com" required>
+                        <div class="error-message" id="error-prof-email">E-mail inválido</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="prof-phone">Telefone <span class="required">*</span></label>
+                        <input type="tel" id="prof-phone" placeholder="(00) 00000-0000" required>
+                        <div class="error-message" id="error-prof-phone">Telefone inválido</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="prof-region">Região de Saúde <span class="required">*</span></label>
+                        <select id="prof-region" required>
+                            <option value="">Selecione uma região</option>
+                            <option value="primeira">1</option>
+                            <option value="segunda">2</option>
+                            <option value="terceira">3</option>
+                            <option value="quarta">4</option>
+                            <option value="quinta">5</option>
+                            <option value="sexta">6</option>
+                            <option value="setima">7</option>
+                            <option value="oitava">8</option>
+                            <option value="nona">9</option>
+                            <option value="decima">10</option>
+                            <option value="decima-primeira">11</option>
+                            <option value="decima-segunda">12</option>
+                        </select>
+                        <div class="error-message" id="error-prof-region">Campo obrigatório</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="prof-municipality">Município <span class="required">*</span></label>
+                    <input type="text" id="prof-municipality" placeholder="Digite o município" required>
+                    <div class="error-message" id="error-prof-municipality">Campo obrigatório</div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-primary btn-next" onclick="goToStep(2)">
+                        Próximo
+                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.59 16.59L10 18l8-8-8-8-1.41 1.41L14.17 9H6v2h8.17L8.59 16.59z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- FORM SECTION 2: PATIENT -->
+            <div class="form-section" id="section-2">
+                <h2 class="form-title">Dados do Paciente</h2>
+                <p class="form-description">Preencha os dados do paciente a ser vacinado</p>
+
+                <div class="form-group">
+                    <label for="patient-fullname">Nome Completo <span class="required">*</span></label>
+                    <input type="text" id="patient-fullname" placeholder="Digite o nome completo do paciente" required>
+                    <div class="error-message" id="error-patient-fullname">Campo obrigatório</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patient-cpf">CPF <span class="required">*</span></label>
+                        <input type="text" id="patient-cpf" placeholder="000.000.000-00" maxlength="14" required>
+                        <div class="error-message" id="error-patient-cpf">CPF inválido</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="patient-birthdate">Data de Nascimento <span class="required">*</span></label>
+                        <input type="date" id="patient-birthdate" required>
+                        <div class="error-message" id="error-patient-birthdate">Data inválida</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="patient-municipality">Município de Residência <span class="required">*</span></label>
+                    <input type="text" id="patient-municipality" placeholder="Digite o município" required>
+                    <div class="error-message" id="error-patient-municipality">Campo obrigatório</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="patient-condition">Situação Médica/Comorbidade <span class="required">*</span></label>
+                    <textarea id="patient-condition" placeholder="Descreva a situação médica ou comorbidade do paciente" required></textarea>
+                    <div class="error-message" id="error-patient-condition">Campo obrigatório</div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="goToStep(1)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.41 7.41L14 6l-8 8 8 8 1.41-1.41L9.83 15H20v-2H9.83l5.58-5.59z"/>
+                        </svg>
+                        Anterior
+                    </button>
+                    <button type="button" class="btn-primary" onclick="goToStep(3)">
+                        Próximo
+                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.59 16.59L10 18l8-8-8-8-1.41 1.41L14.17 9H6v2h8.17L8.59 16.59z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- FORM SECTION 3: DOCUMENTATION -->
+            <div class="form-section" id="section-3">
+                <h2 class="form-title">Documentação</h2>
+                <p class="form-description">Anexe os documentos necessários para completar a solicitação</p>
+
+                <div class="form-group">
+                    <label>Documento com Foto <span class="required">*</span></label>
+                    <div class="upload-area photo" id="upload-photo" onclick="document.getElementById('file-photo').click()">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                            </svg>
+                        </div>
+                        <span class="upload-text">Clique para selecionar</span>
+                        <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                        <input type="file" id="file-photo" class="file-input" accept="image/*,.pdf" required>
+                        <div class="file-name" id="filename-photo" style="display: none;">
+                            <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span id="filename-photo-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Comprovante de Residência <span class="required">*</span></label>
+                    <div class="upload-area residence" id="upload-residence" onclick="document.getElementById('file-residence').click()">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                            </svg>
+                        </div>
+                        <span class="upload-text">Clique para selecionar</span>
+                        <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                        <input type="file" id="file-residence" class="file-input" accept="image/*,.pdf" required>
+                        <div class="file-name" id="filename-residence" style="display: none;">
+                            <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span id="filename-residence-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Laudo / Comprovante Médico <span class="required">*</span></label>
+                    <div class="upload-area medical" id="upload-medical" onclick="document.getElementById('file-medical').click()">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z"/>
+                                <path d="M16 18H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V8h8v2z"/>
+                            </svg>
+                        </div>
+                        <span class="upload-text">Clique para selecionar</span>
+                        <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                        <input type="file" id="file-medical" class="file-input" accept="image/*,.pdf" required>
+                        <div class="file-name" id="filename-medical" style="display: none;">
+                            <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span id="filename-medical-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="goToStep(2)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.41 7.41L14 6l-8 8 8 8 1.41-1.41L9.83 15H20v-2H9.83l5.58-5.59z"/>
+                        </svg>
+                        Anterior
+                    </button>
+                    <button type="button" class="btn-primary" onclick="submitForm()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2z"/>
+                            <path d="M11 3L5.5 8.5l1.42 1.41L11 5.83V15h2V5.83l4.08 4.08L18.5 8.5z"/>
+                        </svg>
+                        Enviar Solicitação
+                    </button>
+                </div>
+            </div>
+
+            <!-- FORM SECTION 4: CONFIRMATION -->
+            <div class="form-section" id="section-4">
+                <div class="confirmation-container">
+                    <div class="confirmation-icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                    </div>
+                    <h2 class="confirmation-title">Solicitação Enviada!</h2>
+                    <p class="confirmation-text">
+                        Seu formulário de solicitação de vacinação foi enviado com sucesso. Um número de protocolo foi gerado para acompanhar sua solicitação.
+                    </p>
+
+                    <div class="confirmation-details">
+                        <h3>Dados da Solicitação</h3>
+                        <div class="confirmation-detail-row">
+                            <span class="confirmation-detail-label">Número de Protocolo:</span>
+                            <span class="confirmation-detail-value" id="protocol-number"></span>
+                        </div>
+                        <div class="confirmation-detail-row">
+                            <span class="confirmation-detail-label">Profissional Solicitante:</span>
+                            <span class="confirmation-detail-value" id="confirmation-prof-name"></span>
+                        </div>
+                        <div class="confirmation-detail-row">
+                            <span class="confirmation-detail-label">Paciente:</span>
+                            <span class="confirmation-detail-value" id="confirmation-patient-name"></span>
+                        </div>
+                        <div class="confirmation-detail-row">
+                            <span class="confirmation-detail-label">Data de Envio:</span>
+                            <span class="confirmation-detail-value" id="confirmation-date"></span>
+                        </div>
+                        <div class="confirmation-detail-row">
+                            <span class="confirmation-detail-label">Status:</span>
+                            <span class="confirmation-detail-value" style="color: #10b981;">Pendente de Análise</span>
+                        </div>
+                    </div>
+
+                    <p class="confirmation-text" style="font-size: 0.95rem; color: #6b7280;">
+                        Você receberá uma confirmação por e-mail com todos os detalhes da sua solicitação e instruções para acompanhar o status.
+                    </p>
+
+                    <div class="confirmation-buttons">
+                        <button type="button" class="btn-restart" onclick="startNewForm()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+                            </svg>
+                            Nova Solicitação
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const formData = {
+            professional: {
+                fullName: '',
+                cpf: '',
+                email: '',
+                phone: '',
+                healthRegion: '',
+                municipality: ''
+            },
+            patient: {
+                fullName: '',
+                cpf: '',
+                birthDate: '',
+                municipality: '',
+                medicalCondition: ''
+            },
+            documentation: {
+                photoDocument: null,
+                proofOfResidence: null,
+                medicalReport: null
+            }
+        };
+
+        function goToStep(step) {
+            if (step === currentStep + 1 && !validateCurrentStep()) {
+                return;
+            }
+
+            saveCurrentStepData();
+            currentStep = step;
+            updateUI();
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.form-section').forEach((section, index) => {
+                section.classList.toggle('active', index + 1 === currentStep);
+            });
+
+            for (let i = 1; i <= 3; i++) {
+                const circle = document.getElementById(`step-${i}-circle`);
+                const label = document.getElementById(`step-${i}-label`);
+
+                circle.classList.remove('active', 'completed');
+                label.classList.remove('active');
+
+                if (i < currentStep && currentStep !== 4) {
+                    circle.classList.add('completed');
+                } else if (i === currentStep) {
+                    circle.classList.add('active');
+                    label.classList.add('active');
+                }
+            }
+
+            if (currentStep < 4) {
+                restoreStepData();
+            }
+        }
+
+        function validateCurrentStep() {
+            const errors = [];
+
+            if (currentStep === 1) {
+                const prof = {
+                    fullName: document.getElementById('prof-fullname').value,
+                    cpf: document.getElementById('prof-cpf').value,
+                    email: document.getElementById('prof-email').value,
+                    phone: document.getElementById('prof-phone').value,
+                    region: document.getElementById('prof-region').value,
+                    municipality: document.getElementById('prof-municipality').value
+                };
+
+                if (!prof.fullName) errors.push('prof-fullname');
+                if (!prof.cpf || !isValidCPF(prof.cpf)) errors.push('prof-cpf');
+                if (!prof.email || !isValidEmail(prof.email)) errors.push('prof-email');
+                if (!prof.phone) errors.push('prof-phone');
+                if (!prof.region) errors.push('prof-region');
+                if (!prof.municipality) errors.push('prof-municipality');
+            } else if (currentStep === 2) {
+                const patient = {
+                    fullName: document.getElementById('patient-fullname').value,
+                    cpf: document.getElementById('patient-cpf').value,
+                    birthDate: document.getElementById('patient-birthdate').value,
+                    municipality: document.getElementById('patient-municipality').value,
+                    condition: document.getElementById('patient-condition').value
+                };
+
+                if (!patient.fullName) errors.push('patient-fullname');
+                if (!patient.cpf || !isValidCPF(patient.cpf)) errors.push('patient-cpf');
+                if (!patient.birthDate) errors.push('patient-birthdate');
+                if (!patient.municipality) errors.push('patient-municipality');
+                if (!patient.condition) errors.push('patient-condition');
+            } else if (currentStep === 3) {
+                if (!document.getElementById('file-photo').files.length) errors.push('file-photo');
+                if (!document.getElementById('file-residence').files.length) errors.push('file-residence');
+                if (!document.getElementById('file-medical').files.length) errors.push('file-medical');
+            }
+
+            displayErrors(errors);
+            return errors.length === 0;
+        }
+
+        function displayErrors(errorIds) {
+            document.querySelectorAll('.error-message').forEach(msg => {
+                msg.classList.remove('show');
+            });
+
+            document.querySelectorAll('input, select, textarea').forEach(field => {
+                field.classList.remove('error');
+            });
+
+            errorIds.forEach(id => {
+                const errorMsg = document.getElementById(`error-${id}`);
+                const field = document.getElementById(id);
+                if (errorMsg) errorMsg.classList.add('show');
+                if (field) field.classList.add('error');
+            });
+        }
+
+        function saveCurrentStepData() {
+            if (currentStep === 1) {
+                formData.professional = {
+                    fullName: document.getElementById('prof-fullname').value,
+                    cpf: document.getElementById('prof-cpf').value,
+                    email: document.getElementById('prof-email').value,
+                    phone: document.getElementById('prof-phone').value,
+                    healthRegion: document.getElementById('prof-region').value,
+                    municipality: document.getElementById('prof-municipality').value
+                };
+            } else if (currentStep === 2) {
+                formData.patient = {
+                    fullName: document.getElementById('patient-fullname').value,
+                    cpf: document.getElementById('patient-cpf').value,
+                    birthDate: document.getElementById('patient-birthdate').value,
+                    municipality: document.getElementById('patient-municipality').value,
+                    medicalCondition: document.getElementById('patient-condition').value
+                };
+            } else if (currentStep === 3) {
+                formData.documentation = {
+                    photoDocument: document.getElementById('file-photo').files[0] || null,
+                    proofOfResidence: document.getElementById('file-residence').files[0] || null,
+                    medicalReport: document.getElementById('file-medical').files[0] || null
+                };
+            }
+        }
+
+        function restoreStepData() {
+            if (currentStep === 1) {
+                document.getElementById('prof-fullname').value = formData.professional.fullName;
+                document.getElementById('prof-cpf').value = formData.professional.cpf;
+                document.getElementById('prof-email').value = formData.professional.email;
+                document.getElementById('prof-phone').value = formData.professional.phone;
+                document.getElementById('prof-region').value = formData.professional.healthRegion;
+                document.getElementById('prof-municipality').value = formData.professional.municipality;
+            } else if (currentStep === 2) {
+                document.getElementById('patient-fullname').value = formData.patient.fullName;
+                document.getElementById('patient-cpf').value = formData.patient.cpf;
+                document.getElementById('patient-birthdate').value = formData.patient.birthDate;
+                document.getElementById('patient-municipality').value = formData.patient.municipality;
+                document.getElementById('patient-condition').value = formData.patient.medicalCondition;
+            }
+        }
+
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        function isValidCPF(cpf) {
+            const cleaned = cpf.replace(/\D/g, '');
+            return cleaned.length === 11;
+        }
+
+        function formatCPF(value) {
+            const cleaned = value.replace(/\D/g, '');
+            if (cleaned.length <= 3) return cleaned;
+            if (cleaned.length <= 6) return `${cleaned.slice(0, 3)}.${cleaned.slice(3)}`;
+            if (cleaned.length <= 9) return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6)}`;
+            return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6, 9)}-${cleaned.slice(9, 11)}`;
+        }
+
+        function formatPhone(value) {
+            const cleaned = value.replace(/\D/g, '');
+            if (cleaned.length <= 2) return cleaned;
+            if (cleaned.length <= 7) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+            return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
+        }
+
+        function submitForm() {
+            if (!validateCurrentStep()) return;
+
+            saveCurrentStepData();
+
+            console.log('Dados do Formulário:', formData);
+
+            currentStep = 4;
+            updateUI();
+
+            const protocolNumber = generateProtocolNumber();
+            const currentDate = new Date().toLocaleDateString('pt-BR');
+
+            document.getElementById('protocol-number').textContent = protocolNumber;
+            document.getElementById('confirmation-prof-name').textContent = formData.professional.fullName;
+            document.getElementById('confirmation-patient-name').textContent = formData.patient.fullName;
+            document.getElementById('confirmation-date').textContent = currentDate;
+        }
+
+        function generateProtocolNumber() {
+            const timestamp = Date.now();
+            const random = Math.floor(Math.random() * 10000);
+            return `VAC-${timestamp}-${random}`.substring(0, 20);
+        }
+
+        function startNewForm() {
+            resetForm();
+        }
+
+        function resetForm() {
+            formData.professional = {
+                fullName: '',
+                cpf: '',
+                email: '',
+                phone: '',
+                healthRegion: '',
+                municipality: ''
+            };
+            formData.patient = {
+                fullName: '',
+                cpf: '',
+                birthDate: '',
+                municipality: '',
+                medicalCondition: ''
+            };
+            formData.documentation = {
+                photoDocument: null,
+                proofOfResidence: null,
+                medicalReport: null
+            };
+
+            currentStep = 1;
+            document.querySelectorAll('input, select, textarea').forEach(field => {
+                field.value = '';
+                field.classList.remove('error');
+            });
+            document.querySelectorAll('.file-name').forEach(fn => fn.style.display = 'none');
+            document.querySelectorAll('.upload-area').forEach(area => area.classList.remove('has-file'));
+            document.querySelectorAll('.file-input').forEach(fi => fi.value = '');
+            document.querySelectorAll('.error-message').forEach(msg => msg.classList.remove('show'));
+            updateUI();
+        }
+
+        document.getElementById('prof-cpf').addEventListener('input', (e) => {
+            e.target.value = formatCPF(e.target.value);
+        });
+
+        document.getElementById('patient-cpf').addEventListener('input', (e) => {
+            e.target.value = formatCPF(e.target.value);
+        });
+
+        document.getElementById('prof-phone').addEventListener('input', (e) => {
+            e.target.value = formatPhone(e.target.value);
+        });
+
+        document.getElementById('file-photo').addEventListener('change', (e) => {
+            const fileName = e.target.files[0]?.name;
+            const fileNameDiv = document.getElementById('filename-photo');
+            if (fileName) {
+                document.getElementById('filename-photo-text').textContent = fileName;
+                fileNameDiv.style.display = 'flex';
+                document.getElementById('upload-photo').classList.add('has-file');
+            }
+        });
+
+        document.getElementById('file-residence').addEventListener('change', (e) => {
+            const fileName = e.target.files[0]?.name;
+            const fileNameDiv = document.getElementById('filename-residence');
+            if (fileName) {
+                document.getElementById('filename-residence-text').textContent = fileName;
+                fileNameDiv.style.display = 'flex';
+                document.getElementById('upload-residence').classList.add('has-file');
+            }
+        });
+
+        document.getElementById('file-medical').addEventListener('change', (e) => {
+            const fileName = e.target.files[0]?.name;
+            const fileNameDiv = document.getElementById('filename-medical');
+            if (fileName) {
+                document.getElementById('filename-medical-text').textContent = fileName;
+                fileNameDiv.style.display = 'flex';
+                document.getElementById('upload-medical').classList.add('has-file');
+            }
+        });
+    </script>
+</body>
+</html>
