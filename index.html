@@ -541,8 +541,7 @@
             <div class="success-message" id="successMessage">
                 Formulário enviado com sucesso! Sua solicitação foi registrada.
             </div>
-            <form action="https://pei-pernambuco.app.n8n.cloud/webhook/formulario-de-solicitacao" method="POST"
-                enctype="multipart/form-data">
+            <form id="vacinacaoForm">
                 <!-- FORM SECTION 1: PROFESSIONAL -->
                 <div class="form-section active" id="section-1">
                     <h2 class="form-title">Dados do Profissional Solicitante</h2>
@@ -701,7 +700,8 @@
                             </div>
                             <span class="upload-text">Clique para selecionar</span>
                             <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                            <input type="file" id="file-photo" name="file-photo" class="file-input" accept="image/*,.pdf" required>
+                            <input type="file" id="file-photo" name="file-photo" class="file-input"
+                                accept="image/*,.pdf" required>
                             <div class="file-name" id="filename-photo" style="display: none;">
                                 <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
@@ -713,7 +713,7 @@
 
                     <div class="form-group">
                         <label>Comprovante de Residência <span class="required">*</span></label>
-                        <div class="upload-area residence" id="upload-residence" 
+                        <div class="upload-area residence" id="upload-residence"
                             onclick="document.getElementById('file-residence').click()">
                             <div class="upload-icon">
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -722,7 +722,8 @@
                             </div>
                             <span class="upload-text">Clique para selecionar</span>
                             <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                            <input type="file" id="file-residence" name="file-residence" class="file-input" accept="image/*,.pdf" required>
+                            <input type="file" id="file-residence" name="file-residence" class="file-input"
+                                accept="image/*,.pdf" required>
                             <div class="file-name" id="filename-residence" style="display: none;">
                                 <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
@@ -734,7 +735,7 @@
 
                     <div class="form-group">
                         <label>Laudo / Comprovante Médico <span class="required">*</span></label>
-                        <div class="upload-area medical" id="upload-medical" 
+                        <div class="upload-area medical" id="upload-medical"
                             onclick="document.getElementById('file-medical').click()">
                             <div class="upload-icon">
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -744,7 +745,8 @@
                             </div>
                             <span class="upload-text">Clique para selecionar</span>
                             <span class="upload-subtext">ou arraste o arquivo aqui</span>
-                            <input type="file" id="file-medical" name="file-medical" class="file-input" accept="image/*,.pdf" required>
+                            <input type="file" id="file-medical" name="file-medical" class="file-input"
+                                accept="image/*,.pdf" required>
                             <div class="file-name" id="filename-medical" style="display: none;">
                                 <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
@@ -1019,38 +1021,47 @@
         }
 
         function submitForm() {
+            // 1. Valida a última etapa (Documentos)
             if (!validateCurrentStep()) return;
 
-            saveCurrentStepData();
+            // 2. Seleciona o botão e o formulário
+            const btn = document.querySelector('button[onclick="submitForm()"]');
+            const formElement = document.getElementById('vacinacaoForm');
 
-            // Captura o formulário
-            const formElement = document.querySelector('form');
+            // 3. Trava de segurança (Impede os 3 envios)
+            if (btn.disabled) return;
+            btn.disabled = true;
+            btn.innerHTML = '<span>Enviando...</span>';
+
+            // 4. Cria o pacote de dados direto dos inputs do formulário
             const formDataObj = new FormData(formElement);
 
-            // Envia os dados via fetch para não sair da página
-            fetch(formElement.action, {
+            // 5. Envio ÚNICO para o n8n
+            fetch("https://pei-pernambuco.app.n8n.cloud/webhook/formulario-de-solicitacao", {
                 method: 'POST',
                 body: formDataObj
-            }).then(response => {
-                if (response.ok) {
-                    // Se o n8n recebeu, mostra a tela de sucesso
-                    currentStep = 4;
-                    updateUI();
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Sucesso!
+                        currentStep = 4;
+                        updateUI();
 
-                    const protocolNumber = generateProtocolNumber();
-                    const currentDate = new Date().toLocaleDateString('pt-BR');
-
-                    document.getElementById('protocol-number').textContent = protocolNumber;
-                    document.getElementById('confirmation-prof-name').textContent = formData.professional.fullName;
-                    document.getElementById('confirmation-patient-name').textContent = formData.patient.fullName;
-                    document.getElementById('confirmation-date').textContent = currentDate;
-                } else {
-                    alert("Erro ao enviar para o servidor. Verifique o n8n.");
-                }
-            }).catch(error => {
-                console.error('Erro:', error);
-                alert("Erro de conexão.");
-            });
+                        // Preenche a tela de confirmação com os dados dos inputs
+                        document.getElementById('protocol-number').textContent = generateProtocolNumber();
+                        document.getElementById('confirmation-prof-name').textContent = document.getElementById('prof-fullname').value;
+                        document.getElementById('confirmation-patient-name').textContent = document.getElementById('patient-fullname').value;
+                        document.getElementById('confirmation-date').textContent = new Date().toLocaleDateString('pt-BR');
+                    } else {
+                        throw new Error("Erro no servidor");
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert("Houve um problema no envio. O botão será liberado.");
+                    btn.disabled = false;
+                    btn.innerHTML = 'Enviar Solicitação';
+                });
         }
 
         function generateProtocolNumber() {
