@@ -847,17 +847,11 @@
                         </div>
                         <h2 class="confirmation-title">Solicitação Enviada!</h2>
                         <p class="confirmation-text">
-                            Seu formulário de solicitação de vacinação foi enviado com sucesso. Um número de
-                            protocolo foi
-                            gerado para acompanhar sua solicitação.
+                            Seu formulário de solicitação de vacinação foi enviado com sucesso. 
                         </p>
 
                         <div class="confirmation-details">
                             <h3>Dados da Solicitação</h3>
-                            <div class="confirmation-detail-row">
-                                <span class="confirmation-detail-label">Número de Protocolo:</span>
-                                <span class="confirmation-detail-value" id="protocol-number"></span>
-                            </div>
                             <div class="confirmation-detail-row">
                                 <span class="confirmation-detail-label">Profissional Solicitante:</span>
                                 <span class="confirmation-detail-value" id="confirmation-prof-name"></span>
@@ -876,12 +870,6 @@
                                     Análise</span>
                             </div>
                         </div>
-
-                        <p class="confirmation-text" style="font-size: 0.95rem; color: #6b7280;">
-                            Você receberá uma confirmação por e-mail com todos os detalhes da sua solicitação e
-                            instruções
-                            para acompanhar o status.
-                        </p>
 
                         <div class="confirmation-buttons">
                             <button type="button" class="btn-restart" onclick="startNewForm()">
@@ -1165,7 +1153,6 @@
                         updateUI();
 
                         // Preenche a tela de confirmação com os dados dos inputs
-                        document.getElementById('protocol-number').textContent = generateProtocolNumber();
                         document.getElementById('confirmation-prof-name').textContent = document.getElementById('prof-fullname').value;
                         document.getElementById('confirmation-patient-name').textContent = document.getElementById('patient-fullname').value;
                         document.getElementById('confirmation-date').textContent = new Date().toLocaleDateString('pt-BR');
@@ -1179,12 +1166,6 @@
                     btn.disabled = false;
                     btn.innerHTML = 'Enviar Solicitação';
                 });
-        }
-
-        function generateProtocolNumber() {
-            const timestamp = Date.now();
-            const random = Math.floor(Math.random() * 10000);
-            return `VAC-${timestamp}-${random}`.substring(0, 20);
         }
 
         function startNewForm() {
