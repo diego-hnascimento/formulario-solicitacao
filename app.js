@@ -1,3 +1,68 @@
+const SUPABASE_URL = 'https://hppmslrkwagfhqdtwbbk.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwcG1zbHJrd2FnZmhxZHR3YmJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA3MjU1NzYsImV4cCI6MjA4NjMwMTU3Nn0.R4hTQb4vJeFDlm3dscvZQVFd7xyR9c0ssrJwhc_pa1M';
+
+async function salvarNoSupabase(dados) {
+    const url = `${SUPABASE_URL}/rest/v1/solicitacoes`;
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(dados)
+    });
+
+    if (!response.ok) {
+        // Tenta ler a mensagem de erro detalhada vinda do Supabase
+        const erroJson = await response.json();
+        console.error("Erro detalhado do Supabase:", erroJson);
+        throw new Error(erroJson.message || 'Erro ao salvar no banco');
+    }
+
+    return await response.json();
+}
+/**
+ * Faz o upload de um ficheiro para o Supabase Storage
+ * @param {File} file Objeto do ficheiro vindo do input
+ * @param {string} folder Pasta dentro do bucket (ex: cpf do paciente)
+ */
+async function uploadFicheiro(file, folder) {
+    if (!file) return null;
+
+    // 1. Limpa o nome do arquivo: remove acentos, espaços e caracteres especiais
+    const cleanFileName = file.name
+        .normalize('NFD')                     // Decompõe caracteres com acentos (ex: é -> e + ´)
+        .replace(/[\u0300-\u036f]/g, "")      // Remove os acentos
+        .replace(/\s+/g, '_')                 // Substitui espaços por underline
+        .replace(/[^\w.-]/g, '');             // Remove qualquer coisa que não seja letra, número, ponto ou traço
+
+    // 2. Cria o caminho final
+    const path = `${folder}/${Date.now()}-${cleanFileName}`;
+    const url = `${SUPABASE_URL}/storage/v1/object/documentos_solicitacoes/${path}`;
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': file.type
+        },
+        body: file
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Erro no upload:", errorData);
+        return null;
+    }
+
+    // Retorna a URL pública
+    return `${SUPABASE_URL}/storage/v1/object/public/documentos_solicitacoes/${path}`;
+}
+
 let currentStep = 1;
 const formData = {
     professional: {
@@ -239,51 +304,122 @@ function formatPhone(value) {
     return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
 }
 
-function submitForm() {
-    // 1. Valida a última etapa (Documentos)
-    if (!validateCurrentStep()) return;
+async function finishForm() {
+    try {
+        const btn = document.querySelector('.btn-next');
+        const loading = document.getElementById('loading-overlay');
+        if (loading) loading.style.display = 'flex';
 
-    // 2. Seleciona o botão e o formulário
-    const btn = document.querySelector('button[onclick="submitForm()"]');
-    const formElement = document.getElementById('vacinacaoForm');
+        // 1. Faz o upload dos arquivos e pega as URLs
+        // Usamos o CPF do paciente para organizar as pastas
+        const pasta = formData.patient.cpf.replace(/\D/g, '') || 'sem_cpf';
 
-    // 3. Trava de segurança (Impede os 3 envios)
-    if (btn.disabled) return;
-    btn.disabled = true;
-    btn.innerHTML = '<span>Enviando...</span>';
+        const urlFoto = await uploadFicheiro(formData.documentation.photoDocument, `${pasta}/identidade`);
+        const urlResidencia = await uploadFicheiro(formData.documentation.proofOfResidence, `${pasta}/residencia`);
+        const urlLaudo = await uploadFicheiro(formData.documentation.medicalReport, `${pasta}/laudo`);
+        const urlCaderneta = await uploadFicheiro(formData.documentation.cadernetaVacinacao, `${pasta}/caderneta`);
 
-    // 4. Cria o pacote de dados direto dos inputs do formulário
-    const formDataObj = new FormData(formElement);
+        // 2. MONTAGEM COMPLETA DO PAYLOAD (Aqui evita o NULL)
+        const payload = {
+            // Dados do Profissional
+            prof_nome: formData.professional.fullName,
+            prof_cpf: formData.professional.cpf,
+            prof_email: formData.professional.email,
+            prof_telefone: formData.professional.phone,
+            prof_regional: formData.professional.healthRegion,
+            prof_municipio: formData.professional.municipality,
+            prof_estabelecimento: formData.professional.estabelecimento,
 
-    // 5. Envio ÚNICO para o n8n
-    fetch("https://pei-pernambuco.app.n8n.cloud/webhook/formulario-de-solicitacao", {
-        method: 'POST',
-        body: formDataObj
-    })
-        .then(response => {
-            if (response.ok) {
-                // Sucesso!
-                currentStep = 4;
-                updateUI();
+            // Dados do Paciente
+            paciente_nome: formData.patient.fullName,
+            paciente_cpf: formData.patient.cpf,
+            paciente_nascimento: formData.patient.birthDate,
+            paciente_regional: formData.patient.region,
+            paciente_municipio: formData.patient.municipality,
+            paciente_condicao: formData.patient.medicalCondition,
+            paciente_peso: formData.patient.peso,
 
-                // Preenche a tela de confirmação com os dados dos inputs
-                document.getElementById('confirmation-prof-name').textContent = document.getElementById('prof-fullname').value;
-                document.getElementById('confirmation-patient-name').textContent = document.getElementById('patient-fullname').value;
-                document.getElementById('confirmation-date').textContent = new Date().toLocaleDateString('pt-BR');
-            } else {
-                throw new Error("Erro no servidor");
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            alert("Houve um problema no envio. O botão será liberado.");
-            btn.disabled = false;
-            btn.innerHTML = 'Enviar Solicitação';
-        });
+            // URLs dos Arquivos (As colunas que adicionamos no SQL)
+            url_documento_foto: urlFoto,
+            url_comprovante_residencia: urlResidencia,
+            url_laudo_medico: urlLaudo,
+            url_caderneta: urlCaderneta,
+
+            status: 'Pendente'
+        };
+
+        console.log("Enviando tudo para o banco:", payload);
+
+        // 3. Salva na tabela 'solicitacoes'
+        await salvarNoSupabase(payload);
+
+        // 4. Sucesso: Muda para a tela final
+        document.getElementById('confirmation-prof-name').textContent = formData.professional.fullName;
+        document.getElementById('confirmation-patient-name').textContent = formData.patient.fullName;
+        document.getElementById('confirmation-date').textContent = new Date().toLocaleDateString('pt-BR');
+
+        currentStep = 4;
+        document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
+        document.getElementById('section-4').style.display = 'block';
+
+    } catch (error) {
+        console.error("Erro completo:", error);
+        alert("❌ Erro ao finalizar solicitação.");
+        const btn = document.querySelector('.btn-next');
+        btn.innerText = "Confirmar Solicitação";
+        btn.disabled = false;
+    }
 }
 
 function startNewForm() {
-    resetForm();
+    console.log("--- 🔄 Reiniciando Sistema e Navegação ---");
+
+    // 1. Reset lógico do passo (Volta para o 1)
+    currentStep = 1;
+
+    // 2. Chama a sua função de limpeza original (que limpa formData e inputs)
+    if (typeof resetForm === 'function') {
+        resetForm();
+    }
+
+    // 3. RESET VISUAL DAS SEÇÕES (Garante que a Seção 1 apareça e as outras sumam)
+    document.querySelectorAll('.form-section').forEach(section => {
+        section.classList.remove('active');
+        section.style.display = 'none'; // Esconde todas
+    });
+
+    const section1 = document.getElementById('section-1');
+    if (section1) {
+        section1.classList.add('active');
+        section1.style.display = 'block'; // Mostra apenas a primeira
+    }
+
+    // 4. RESET DAS BOLINHAS (Indicadores de progresso)
+    document.querySelectorAll('.step').forEach((step, idx) => {
+        step.classList.remove('active', 'completed');
+        if (idx === 0) step.classList.add('active');
+    });
+
+    // 5. RESET DO BOTÃO (Texto e Estado)
+    const btnNext = document.querySelector('.btn-next');
+    if (btnNext) {
+        btnNext.innerText = "Próximo Passo";
+    }
+
+    // 6. REATIVAR VALIDAÇÃO (O "pulo do gato")
+    // Forçamos o disparo do evento 'input' em todos os campos do Passo 1.
+    // Isso faz com que a lógica original do seu app.js (que libera o botão) rode.
+    const fieldsStep1 = ['prof-name', 'prof-cpf', 'prof-email', 'prof-phone'];
+    fieldsStep1.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    console.log("✅ Sistema pronto: Navegação restaurada.");
+    console.log(btnNext)
 }
 
 function resetForm() {
@@ -336,41 +472,49 @@ document.getElementById('prof-phone').addEventListener('input', (e) => {
     e.target.value = formatPhone(e.target.value);
 });
 
+// DOCUMENTO COM FOTO
 document.getElementById('file-photo').addEventListener('change', (e) => {
-    const fileName = e.target.files[0]?.name;
+    const file = e.target.files[0];
     const fileNameDiv = document.getElementById('filename-photo');
-    if (fileName) {
-        document.getElementById('filename-photo-text').textContent = fileName;
+    if (file) {
+        formData.documentation.photoDocument = file; // GUARDA O FICHEIRO REAL
+        document.getElementById('filename-photo-text').textContent = file.name;
         fileNameDiv.style.display = 'flex';
         document.getElementById('upload-photo').classList.add('has-file');
     }
 });
 
+// COMPROVANTE DE RESIDÊNCIA
 document.getElementById('file-residence').addEventListener('change', (e) => {
-    const fileName = e.target.files[0]?.name;
+    const file = e.target.files[0];
     const fileNameDiv = document.getElementById('filename-residence');
-    if (fileName) {
-        document.getElementById('filename-residence-text').textContent = fileName;
+    if (file) {
+        formData.documentation.proofOfResidence = file; // GUARDA O FICHEIRO REAL
+        document.getElementById('filename-residence-text').textContent = file.name;
         fileNameDiv.style.display = 'flex';
         document.getElementById('upload-residence').classList.add('has-file');
     }
 });
 
+// CADERNETA DE VACINAÇÃO
 document.getElementById('file-caderneta').addEventListener('change', (e) => {
-    const fileName = e.target.files[0]?.name;
+    const file = e.target.files[0];
     const fileNameDiv = document.getElementById('filename-caderneta');
-    if (fileName) {
-        document.getElementById('filename-caderneta-text').textContent = fileName;
+    if (file) {
+        formData.documentation.cadernetaVacinacao = file; // GUARDA O FICHEIRO REAL
+        document.getElementById('filename-caderneta-text').textContent = file.name;
         fileNameDiv.style.display = 'flex';
         document.getElementById('upload-caderneta').classList.add('has-file');
     }
 });
 
+// LAUDO MÉDICO
 document.getElementById('file-medical').addEventListener('change', (e) => {
-    const fileName = e.target.files[0]?.name;
+    const file = e.target.files[0];
     const fileNameDiv = document.getElementById('filename-medical');
-    if (fileName) {
-        document.getElementById('filename-medical-text').textContent = fileName;
+    if (file) {
+        formData.documentation.medicalReport = file; // GUARDA O FICHEIRO REAL
+        document.getElementById('filename-medical-text').textContent = file.name;
         fileNameDiv.style.display = 'flex';
         document.getElementById('upload-medical').classList.add('has-file');
     }
