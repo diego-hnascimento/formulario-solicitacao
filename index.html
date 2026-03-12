@@ -1,278 +1,200 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ambiente Nirsevimabe PE</title>
+    <title>Formulário de Solicitação - Nirsevimabe</title>
     <link rel="stylesheet" href="./src/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
-    <div id="tela-login">
-        <div class="login-box">
-            <div class="login-header">
-                <div class="logo-circle"><i class="fa-solid fa-shield-halved"></i></div>
-                <h2>Nirsevimabe PE</h2>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
+                </svg>
             </div>
+            <h1>Formulário de Solicitação Nirsevimabe</h1>
+            <p class="subtitle">Preencha os dados necessários para solicitar o Nirsevimabe</p>
+        </div>
 
-            <div class="input-group-login">
-                <label for="usuario">Usuário</label>
-                <input type="text" id="usuario" placeholder="Digite seu usuário" autocomplete="username">
+        <div class="progress-container">
+            <div class="progress-step">
+                <div class="progress-circle active" id="step-1-circle">1</div>
+                <div class="progress-label active" id="step-1-label">Profissional</div>
             </div>
-
-            <div class="input-group-login">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" placeholder="••••••••" autocomplete="current-password">
+            <div class="progress-step">
+                <div class="progress-circle" id="step-2-circle">2</div>
+                <div class="progress-label" id="step-2-label">Paciente</div>
             </div>
-
-            <div id="login-status" style="display: none;">
-                <span class="spinner"></span> Validando credenciais...
-            </div>
-
-            <button id="btn-login" onclick="realizarLogin()">Entrar</button>
-
-            <div style="margin-top: 15px;">
-                <a href="ajuda.html" style="text-decoration: none;">
-                    <button type="button" class="btn-solicitar"
-                        style="background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; width: 100%; padding-top: 15px; padding-bottom: 15px; border-radius: 10px; cursor: pointer;">
-                        <i class="fa-solid fa-circle-question"></i> Central de Ajuda & Manuais
-                    </button>
-                </a>
-            </div>
-
-            <div class="login-footer">
-                <p>Não tem acesso? <a href="#" onclick="abrirModalSolicitacao()">Solicite aqui</a></p>
-                <a href="https://formulario-solicitacao.vercel.app/" target="_blank">
-                    Formulario Solicitção? <span>Clique aqui</span>
-                </a>
-                <p>Para Acompanhar o Status? <span><a href="./status.html" target="_blank">Clique Aqui</a></span></p>
-            </div>
-
-            <div class="login-footer-signature">
-                Desenvolvido pelo <b>Núcleo de Sistema de Informação em Imunização</b><br>
-                Secretaria Estadual de Saúde de Pernambuco
+            <div class="progress-step">
+                <div class="progress-circle" id="step-3-circle">3</div>
+                <div class="progress-label" id="step-3-label">Documentação</div>
             </div>
         </div>
-    </div>
 
-    <div class="container" id="painel-sistema" style="display: flex;">
-        <aside class="sidebar">
-            <h2><i class="fa-solid fa-shield-halved"></i> Nirsevimabe</h2>
-
-            <nav class="nav-menu">
-                <div class="nav-item active" id="menu-relatorios" onclick="alternarTela('relatorios')"><i
-                        class="fa-solid fa-table"></i> Relatórios
-                </div>
-                <!-- <div class="nav-item" onclick="window.location.href='indicadores.html'"><i
-                        class="fa-solid fa-chart-line"></i> Dashboard</div> -->
-                <div class="nav-item" id="menu-config" onclick="alternarTela('configuracoes')"><i
-                        class="fa-solid fa-gear"></i> Configurações</div>
-            </nav>
-
-
-            <div class="user-info-sidebar">
-                <div>
-                    <div>
-                        <span id="user-initial">U</span>
-                    </div>
-                    <div class="user-dados">
-                        <span id="sidebar-user-name">Usuário</span>
-                        <span id="sidebar-user-role">Perfil</span>
-                    </div>
-                </div>
+        <div class="form-card">
+            <div class="success-message" id="successMessage">
+                Formulário enviado com sucesso! Sua solicitação foi registrada.
             </div>
+            <form id="vacinacaoForm">
+                <!-- FORM SECTION 1: PROFESSIONAL -->
+                <div class="form-section active" id="section-1">
+                    <h2 class="form-title">Dados do Profissional Solicitante</h2>
+                    <p class="form-description">Preencha os dados do profissional responsável</p>
 
-            <div class="logout-container">
-                <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Sair do
-                    Sistema</button>
-            </div>
-        </aside>
-
-        <main class="content">
-            <div class="stats" style="display: grid;">
-                <div class="stat-card">
-                    <h3>Total Geral</h3>
-                    <p id="stat-total">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Pendentes</h3>
-                    <p id="stat-pendentes" style="color: var(--warning);">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Aprovados</h3>
-                    <p id="stat-aprovados" style="color: var(--success);">0</p>
-                </div>
-            </div>
-            <div class="barras-ferramentas">
-                <div class="search-container">
-                    <input type="text" id="filtro-cpf-paciente" placeholder="Buscar por CPF do Paciente ..."
-                        onkeyup="filtrarPorCPF()">
-                </div>
-                <div class="btn-container">
-                    <div class="baixar-excel-municipio">
-                        <button id="btn-exportar-doses-municipio" onclick="exportarDosesPorMunicipio()"><i
-                                class="fa-solid fa-file-export"></i>
-                            Exportar Doses
-                            CSV</button>
-                    </div>
-                    <div class="baixar-excel">
-                        <button id="btn-exportar" onclick="exportarSolicitacoesParaExcel()"><i
-                                class="fa-solid fa-file-export"></i> Exportar Solicitações
-                            CSV</button>
-                    </div>
-                </div>
-
-            </div>
-            <div style="display: none;" class="alerta-oficial" id="alerta-oficial-duplicidade">
-                <div class="alerta-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="alerta-texto">
-                    <strong>AVISO IMPORTANTE:</strong> Solicitações marcadas com status de <b>Duplicidade/Erro</b>,
-                    serão
-                    <b>excluídas</b> do banco no prazo de <b>24h</b>.
-                </div>
-            </div>
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table class="report-table">
-                        <thead>
-                            <tr id="tabela-cabecalho">
-                                <th>Status</th>
-                                <th>Profissional</th>
-                                <th>CPF Prof.</th>
-                                <th>E-mail</th>
-                                <th>Telefone</th>
-                                <th>Região</th>
-                                <th>Município</th>
-                                <th>Estabelecimento</th>
-                                <th>Paciente</th>
-                                <th>CPF</th>
-                                <th>CNS</th>
-                                <th>Data Nascimento</th>
-                                <th>Data de Entrada</th>
-                                <th>Região Pac.</th>
-                                <th>Município Res.</th>
-                                <th>CID-10</th>
-                                <th>Peso</th>
-                                <th>Doc. Foto</th>
-                                <th>Residência</th>
-                                <th>Caderneta</th>
-                                <th>Laudo</th>
-                                <th>Submissão</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-corpo">
-                        </tbody>
-                    </table>
-                </div>
-                <div class="pagination-controls">
-                    <button id="btn-anterior" onclick="paginaAnterior()" disabled> Anterior</button>
-                    <span id="num-pagina">Página 1</span>
-                    <button id="btn-proximo" onclick="proximaPagina()">Próximo </button>
-                </div>
-            </div>
-
-            <div class="baixar-excel">
-                <button id="btn-exportar-doses" onclick="exportarDosesPorUnidade()" style=" margin-bottom: 15px;"><i
-                        class="fa-solid fa-file-export"></i>
-                    Exportar Doses
-                    Excel</button>
-            </div>
-
-            <section id="sessao-unidade-saude" class="admin-section" style="display: none;">
-                <div class="login-header" style="text-align: left; margin-bottom: 20px;">
-                    <h2><i class="fa-solid fa-address-card"></i> Monitoramento (Nirsevimabe)</h2>
-                    <p>Preencha os dados obrigatórios para o monitoramento.</p>
-                </div>
-
-                <div class="alerta-oficial">
-                    <div class="alerta-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                    <div class="alerta-texto">
-                        <strong>AVISO IMPORTANTE:</strong> Este informações destina-se ao monitoramento estratégico
-                        da
-                        Secretaria Estadual de Saúde de Pernambuco.
-                        Ele <b>NÃO substitui</b> o registro nos sistemas oficiais do Ministério da Saúde (e-SUS APS
-                        /
-                        SIPNI).
-                        O profissional <u>deve obrigatoriamente</u> realizar o lançamento no sistema federal.
-                    </div>
-                </div>
-
-                <form id="form-unidade-saude" class="cadastro-grid">
-                    <div class="input-group">
-                        <label>Nome Completo do Paciente*</label>
-                        <input type="text" id="dose-paciente" placeholder="João Silva da Costa" required>
+                    <div class="form-group">
+                        <label for="prof-fullname">Nome do Profissional Solicitante <span
+                                class="required">*</span></label>
+                        <input type="text" id="prof-fullname" name="prof-fullname"
+                            placeholder="Digite seu nome completo" required>
+                        <div class="error-message" id="error-prof-fullname">Campo obrigatório</div>
                     </div>
 
-                    <div class="input-group">
-                        <label>CPF do Paciente</label>
-                        <input type="text" id="dose-cpf" placeholder="000.000.000-00" maxlength="14"
-                            oninput="mascaraCPF(this)">
-                    </div>
-                    <div class="input-group">
-                        <label>CNS</label>
-                        <input type="text" id="dose-cns" placeholder="000.0000.0000.0000" maxlength="18"
-                            oninput="mascaraCNS(this)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prof-cpf">CPF do Profissional Solicitante <span
+                                    class="required">*</span></label>
+                            <input type="text" id="prof-cpf" name="prof-cpf" placeholder="000.000.000-00" maxlength="14"
+                                required>
+                            <div class="error-message" id="error-prof-cpf">CPF inválido</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prof-email">E-mail <span class="required">*</span></label>
+                            <input type="email" id="prof-email" name="prof-email" placeholder="seu.email@exemplo.com"
+                                required>
+                            <div class="error-message" id="error-prof-email">E-mail inválido</div>
+                        </div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Data de Nascimento*</label>
-                        <input type="date" id="dose-nascimento">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prof-phone">Telefone <span class="required">*</span></label>
+                            <input type="tel" id="prof-phone" name="prof-phone" placeholder="(00) 00000-0000" required>
+                            <div class="error-message" id="error-prof-phone">Telefone inválido</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prof-region">Região de Saúde <span class="required">*</span></label>
+                            <select id="prof-region" name="prof-region"
+                                onchange="atualizarMunicipios(this.value, 'prof-municipality')" required>
+                                <option value="">Selecione uma região</option>
+                                <option value="1">1ª Região - Recife</option>
+                                <option value="2">2ª Região - Limoeiro</option>
+                                <option value="3">3ª Região - Palmares</option>
+                                <option value="4">4ª Região - Caruaru</option>
+                                <option value="5">5ª Região - Garanhuns</option>
+                                <option value="6">6ª Região - Arcoverde</option>
+                                <option value="7">7ª Região - Salgueiro</option>
+                                <option value="8">8ª Região - Petrolina</option>
+                                <option value="9">9ª Região - Ouricuri</option>
+                                <option value="10">10ª Região -Afogados da Ingazeira</option>
+                                <option value="11">11ª Região - Serra Talhada</option>
+                                <option value="12">12ª Região - Goiana</option>
+                            </select>
+                            <div class="error-message" id="error-prof-region">Campo obrigatório</div>
+                        </div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Peso do Paciente*</label>
-                        <select id="dose-peso">
-                            <option value="">Selecione...</option>
-                            <option value="Menor que 5kg">Menor que 5 kg</option>
-                            <option value="Maior ou igual a 5kg">Maior/Igual a 5 kg</option>
+                    <div class="form-group">
+                        <label for="prof-municipality">Município <span class="required">*</span></label>
+                        <select id="prof-municipality" name="prof-municipality" required disabled>
+                            <option value="">Selecione primeiro a região</option>
                         </select>
+                        <div class="error-message" id="error-prof-municipality">Campo obrigatório</div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Lote da Vacina*</label>
-                        <select id="dose-lote">
-                            <option value="">Selecione o Lote</option>
-                            <option value="AZ250110">0,5ml - AZ250110 (Val: 31/05/2028)</option>
-                            <option value="AZ250134">0,5ml - AZ250134 (Val: 30/04/2028)</option>
-                            <option value="AZ250111">1,0 ml - AZ250111 (Val: 30/04/2028)</option>
-                            <option value="AZ250156">1,0 ml - AZ250156 (Val: 30/09/2028)</option>
-                        </select>
+                    <div class="form-group">
+                        <label for="prof-estabelecimento">Estabelecimento de Saúde <span
+                                class="required">*</span></label>
+                        <input type="text" id="prof-estabelecimento" name="prof-estabelecimento"
+                            placeholder="Digite o nome do Estabelecimento de Saúde" required>
+                        <div class="error-message" id="error-prof-estabelecimento">Campo obrigatório</div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Tipo de Dose*</label>
-                        <select id="dose-tipo">
-                            <option value="">Selecione...</option>
-                            <option value="P/T1">P/T1</option>
-                            <option value="P/T2">P/T2</option>
-                        </select>
+                    <div class="button-group">
+                        <button type="button" class="btn-primary btn-next" onclick="goToStep(2)">
+                            Próximo
+                            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.59 16.59L10 18l8-8-8-8-1.41 1.41L14.17 9H6v2h8.17L8.59 16.59z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FORM SECTION 2: PATIENT -->
+                <div class="form-section" id="section-2">
+                    <h2 class="form-title">Dados do Paciente</h2>
+                    <p class="form-description">Preencha os dados do paciente a ser imunizado</p>
+
+                    <div class="form-group">
+                        <label for="patient-fullname">Nome Completo <span class="required">*</span></label>
+                        <input type="text" id="patient-fullname" name="patient-fullname"
+                            placeholder="Digite o nome completo do paciente" required>
+                        <div class="error-message" id="error-patient-fullname">Campo obrigatório</div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Data da Aplicação*</label>
-                        <input type="date" id="dose-data">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-cpf">CPF <span class="required">*</span></label>
+                            <input type="text" id="patient-cpf" name="patient-cpf" placeholder="000.000.000-00"
+                                maxlength="14" required>
+                            <div class="error-message" id="error-patient-cpf">Obrigatório CPF ou CNS válido</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="patient-cns">CNS do Paciente</label>
+                            <input type="text" id="patient-cns" placeholder="000 0000 0000 0000" maxlength="18">
+                            <span class="error-message" id="error-patient-cns">Informe um CNS válido</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-birthdate">Data de Nascimento <span class="required">*</span></label>
+                            <input type="date" id="patient-birthdate" name="patient-birthdate" required>
+                            <div class="error-message" id="error-patient-birthdate">Data inválida</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="date-solicitacao">Data de Entrada na Solicitação</label>
+                            <input type="date" id="date-solicitacao" name="date-solicitacao">
+                            <div class="error-message" id="error-patient-birthdate">Data inválida</div>
+                        </div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Via de Administração*</label>
-                        <select id="dose-via">
-                            <option value="Intramuscular">Intramuscular</option>
-                        </select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patient-region">Região de Saúde <span class="required">*</span></label>
+                            <select id="patient-region" name="patient-region"
+                                onchange="atualizarMunicipios(this.value, 'patient-municipality')" required>
+                                <option value="">Selecione uma região</option>
+                                <option value="1">1ª Região - Recife</option>
+                                <option value="2">2ª Região - Limoeiro</option>
+                                <option value="3">3ª Região - Palmares</option>
+                                <option value="4">4ª Região - Caruaru</option>
+                                <option value="5">5ª Região - Garanhuns</option>
+                                <option value="6">6ª Região - Arcoverde</option>
+                                <option value="7">7ª Região - Salgueiro</option>
+                                <option value="8">8ª Região - Petrolina</option>
+                                <option value="9">9ª Região - Ouricuri</option>
+                                <option value="10">10ª Região -Afogados da Ingazeira</option>
+                                <option value="11">11ª Região - Serra Talhada</option>
+                                <option value="12">12ª Região - Goiana</option>
+                            </select>
+                            <div class="error-message" id="error-patient-region">Campo obrigatório</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="patient-municipality">Município de Residência <span
+                                    class="required">*</span></label>
+                            <select id="patient-municipality" name="patient-municipality" required disabled>
+                                <option value="">Selecione primeiro a região</option>
+                            </select>
+                            <div class="error-message" id="error-patient-municipality">Campo obrigatório</div>
+                        </div>
                     </div>
 
-                    <div class="input-group">
-                        <label>Local da Aplicação*</label>
-                        <select id="dose-local">
-                            <option value="">Selecione...</option>
-                            <option value="Vasto Lateral da Coxa Direita">Vasto Lateral da Coxa Direita</option>
-                            <option value="Vasto Lateral da Coxa Esquerda">Vasto Lateral da Coxa Esquerda</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label>CID - 10*</label>
-                        <select id="dose-cid">
+                    <div class="form-group">
+                        <label for="patient-condition">CID-10/Condição Cliníca<span class="required">*</span></label>
+                        <select id="patient-condition" name="patient-condition" required>
                             <option value="">Selecione um CID-10</option>
                             <option value="prematuridade">Prematuridade</option>
                             <option value="cardiopatia-congenita">Cardiopatia congênita</option>
@@ -285,161 +207,205 @@
                             <option value="sindrome-de-dowm">Síndrome de Dowm</option>
                             <option value="doenca-neuromuscular">Doença Neuromuscular</option>
                         </select>
+                        <div class="error-message" id="error-patient-condition">Campo obrigatório</div>
                     </div>
 
-                    <button type="button" class="btn-salvar" style="background: var(--accent); grid-column: 1 / -1;"
-                        onclick="enviarDadosUnidade()">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Enviar Dados
-                    </button>
-                </form>
-            </section>
-
-            <section id="sessao-gestor-estadual" class="admin-section" style="display:none;">
-                <div class="card-header">
-                    <div class="header-info">
-                        <h2>Gestão de Usuários</h2>
-                        <p>Cadastre novos gestores municipais ou estaduais abaixo</p>
+                    <div class="form-group">
+                        <label for="patient-condition">Peso da Criança<span class="required">*</span></label>
+                        <select id="patient-peso" name="patient-peso" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="menor-que-5kg"> Menor que 5kg </option>
+                            <option value="maior/igual-a-5kg">Maior ou igual a 5kg </option>
+                        </select>
+                        <div class="error-message" id="error-patient-peso">Campo obrigatório</div>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" class="btn-secondary" onclick="goToStep(1)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.41 7.41L14 6l-8 8 8 8 1.41-1.41L9.83 15H20v-2H9.83l5.58-5.59z" />
+                            </svg>
+                            Anterior
+                        </button>
+                        <button type="button" class="btn-primary" onclick="goToStep(3)">
+                            Próximo
+                            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.59 16.59L10 18l8-8-8-8-1.41 1.41L14.17 9H6v2h8.17L8.59 16.59z" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
+                <!-- FORM SECTION 3: DOCUMENTATION -->
+                <div class="form-section" id="section-3">
+                    <h2 class="form-title">Documentação</h2>
+                    <p class="form-description">Anexe os documentos necessários para completar a solicitação</p>
 
-                <form id="form-cadastro-usuario" class="cadastro-grid">
-                    <div class="input-group">
-                        <label for="novo-user">Nome de Usuário</label>
-                        <input type="text" id="novo-user" placeholder="Ex: joao.saude">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="nova-senha">Senha Provisória</label>
-                        <input type="password" id="nova-senha" placeholder="••••••••">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="novo-role">Perfil de Acesso</label>
-                        <select id="novo-role" onchange="verificarRoleUnidade()">
-                            <option value="municipio">Município (Visualização)</option>
-                            <option value="unidade">Unidade de Saúde (Registro de Dose)</option>
-                            <option value="estadual">Gestor Estadual (Total)</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="novo-municipio">Município</label>
-                        <input type="text" id="novo-municipio" placeholder="Digite o município"
-                            onblur="carregarUnidadesPorMunicipio(this.value)">
-                    </div>
-
-                    <div class="input-group" id="container-unidade-vinculo" style="display: none;">
-                        <label for="nova-unidade">Vincular Unidade de Saúde</label>
-                        <select id="nova-unidade">
-                            <option value="">Aguardando município...</option>
-                        </select>
-                    </div>
-
-                    <button type="button" class="btn-salvar" onclick="cadastrarNovoUsuario()"><i
-                            class="fa-solid fa-floppy-disk"></i> Salvar Usuário</button>
-                </form>
-
-                <section id="area-aprovacao-acesso" style="display: none; margin-top: 30px;">
-                    <div class="card-aprovacao">
-                        <div class="header-acoes"
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <div>
-                                <h3 style="margin: 0;"><i class="fa-solid fa-inbox"></i> Solicitações de Acesso
-                                    Pendentes</h3>
-                                <p style="font-size: 0.85rem; color: #666;">Analise os pedidos abaixo antes de liberar a
-                                    entrada no sistema.</p>
+                    <div class="form-group">
+                        <label>Documentos de Identificação <span class="required">*</span></label>
+                        <p class="form-p">(Cartão Nacional de Saúde (CNS) e/ou CPF e/ou Certidão de Nascimento)</p>
+                        <div class="upload-area photo" id="upload-photo"
+                            onclick="document.getElementById('file-photo').click()">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                                </svg>
                             </div>
-                            <button class="btn-salvar" style="width: auto; padding: 10px 20px;"
-                                onclick="buscarSolicitacoesPendentes()">
-                                <i class="fa-solid fa-arrows-rotate"></i> Atualizar Lista
+                            <span class="upload-text">Clique para selecionar</span>
+                            <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                            <input type="file" id="file-photo" name="file-photo" class="file-input"
+                                accept="image/*,.pdf" required>
+                            <div class="file-name" id="filename-photo" style="display: none;">
+                                <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                </svg>
+                                <span id="filename-photo-text"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comprovante de Residência</label>
+                        <div class="upload-area residence" id="upload-residence"
+                            onclick="document.getElementById('file-residence').click()">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                                </svg>
+                            </div>
+                            <span class="upload-text">Clique para selecionar</span>
+                            <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                            <input type="file" id="file-residence" name="file-residence" class="file-input"
+                                accept="image/*,.pdf" required>
+                            <div class="file-name" id="filename-residence" style="display: none;">
+                                <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                </svg>
+                                <span id="filename-residence-text"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Caderneta de Saúde da Criança - Registro Vacinal <span class="required">*</span></label>
+                        <div class="upload-area medical" id="upload-caderneta"
+                            onclick="document.getElementById('file-caderneta').click()">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z" />
+                                    <path d="M16 18H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V8h8v2z" />
+                                </svg>
+                            </div>
+                            <span class="upload-text">Clique para selecionar</span>
+                            <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                            <input type="file" id="file-caderneta" name="file-caderneta" class="file-input"
+                                accept="image/*,.pdf" required>
+                            <div class="file-name" id="filename-caderneta" style="display: none;">
+                                <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                </svg>
+                                <span id="filename-caderneta-text"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Indicação e Descrição da Dondição Clínica <span class="required">*</span></label>
+                        <p class="form-p">Relatório, laudo médico ou prescrição médica com carimbo e a assinatura do
+                            médico com seu respectivo registro profissional equivalente</p>
+                        <div class="upload-area medical" id="upload-medical"
+                            onclick="document.getElementById('file-medical').click()">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-8-6z" />
+                                    <path d="M16 18H8v-2h8v2zm0-4H8v-2h8v2zm0-4H8V8h8v2z" />
+                                </svg>
+                            </div>
+                            <span class="upload-text">Clique para selecionar</span>
+                            <span class="upload-subtext">ou arraste o arquivo aqui</span>
+                            <input type="file" id="file-medical" name="file-medical" class="file-input"
+                                accept="image/*,.pdf" required>
+                            <div class="file-name" id="filename-medical" style="display: none;">
+                                <svg class="check-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                                </svg>
+                                <span id="filename-medical-text"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-secondary" onclick="goToStep(2)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.41 7.41L14 6l-8 8 8 8 1.41-1.41L9.83 15H20v-2H9.83l5.58-5.59z" />
+                            </svg>
+                            Anterior
+                        </button>
+                        <button type="button" class="btn-primary" onclick="finishForm()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2z" />
+                                <path d="M11 3L5.5 8.5l1.42 1.41L11 5.83V15h2V5.83l4.08 4.08L18.5 8.5z" />
+                            </svg>
+                            Enviar Solicitação
+                        </button>
+                        <div id="loading-overlay"
+                            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; flex-direction: column; align-items: center; justify-content: center;">
+                            <div class="spinner"
+                                style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;">
+                            </div>
+                            <p style="margin-top: 15px; font-family: sans-serif; font-weight: bold; color: #2c3e50;">
+                                Enviando dados...</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- FORM SECTION 4: CONFIRMATION -->
+                <div class="form-section" id="section-4">
+                    <div class="confirmation-container">
+                        <div class="confirmation-icon">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                            </svg>
+                        </div>
+                        <h2 class="confirmation-title">Solicitação Enviada!</h2>
+                        <p class="confirmation-text">
+                            Seu formulário de solicitação de vacinação foi enviado com sucesso.
+                        </p>
+
+                        <div class="confirmation-details">
+                            <h3>Dados da Solicitação</h3>
+                            <div class="confirmation-detail-row">
+                                <span class="confirmation-detail-label">Profissional Solicitante:</span>
+                                <span class="confirmation-detail-value" id="confirmation-prof-name"></span>
+                            </div>
+                            <div class="confirmation-detail-row">
+                                <span class="confirmation-detail-label">Paciente:</span>
+                                <span class="confirmation-detail-value" id="confirmation-patient-name"></span>
+                            </div>
+                            <div class="confirmation-detail-row">
+                                <span class="confirmation-detail-label">Data de Envio:</span>
+                                <span class="confirmation-detail-value" id="confirmation-date"></span>
+                            </div>
+                            <div class="confirmation-detail-row">
+                                <span class="confirmation-detail-label">Status:</span>
+                                <span class="confirmation-detail-value" style="color: #10b981;">Pendente de
+                                    Análise</span>
+                            </div>
+                        </div>
+
+                        <div class="confirmation-buttons">
+                            <a href="https://monitoramento-nirsevimabe.vercel.app/status.html" target="_blank"
+                                class="btn-restart">Acompanhar Solicitação</a>
+                            <button type="button" class="btn-restart" onclick="startNewForm()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+                                </svg>
+                                Nova Solicitação
                             </button>
                         </div>
-
-                        <div style="overflow-x: auto;">
-                            <table class="tabela-solicitacoes">
-                                <thead>
-                                    <tr>
-                                        <th>Usuário/E-mail</th>
-                                        <th>Município</th>
-                                        <th>Perfil</th>
-                                        <th>Unidade Vinculada</th>
-                                        <th>Status</th>
-                                        <th style="text-align: center;">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="corpo-tabela-solicitacoes">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-        </main>
-    </div>
-    <div id="modal-solicitacao" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="fecharModalSolicitacao()">&times;</span>
-            <h3>Solicitar Acesso ao Sistema</h3>
-            <p>Preencha os dados abaixo para análise do Gestor Estadual.</p>
-
-            <form id="form-solicitacao">
-                <div class="input-group-login">
-                    <label>E-mail (Usuário) *</label>
-                    <input type="email" id="solicitar-user" placeholder="Ex: email@exemplo.com">
-                </div>
-                <div class="input-group-login">
-                    <label>Senha de Acesso*</label>
-                    <input type="password" id="solicitar-password" placeholder="Crie uma senha segura">
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="input-group-login">
-                        <label>Município*</label>
-                        <input type="text" id="solicitar-municipio" placeholder="Nome da cidade"
-                            onblur="buscarUnidadesSolicitacao()">
-                    </div>
-                    <div class="input-group-login">
-                        <label>Perfil*</label>
-                        <select id="solicitar-role" onchange="controlarCamposNovoUsuario()">
-                            <option value="unidade">Unidade</option>
-                            <option value="municipio">Gestor Municipal</option>
-                            <option value="regional">Gestor Regional</option>
-                        </select>
                     </div>
                 </div>
-                <div class="input-group-login" id="container-novo-regional" style="display:none;">
-                    <label>Regional de Saúde*</label>
-                    <select id="novo-regional">
-                        <option value="">Selecione a Regional...</option>
-                        <option value="1">I GERES</option>
-                        <option value="2">II GERES</option>
-                        <option value="3">III GERES</option>
-                        <option value="4">IV GERES</option>
-                        <option value="5">V GERES</option>
-                        <option value="6">VI GERES</option>
-                        <option value="7">VII GERES</option>
-                        <option value="8">VIII GERES</option>
-                        <option value="9">IX GERES</option>
-                        <option value="10">X GERES</option>
-                        <option value="11">XI GERES</option>
-                        <option value="12">XII GERES</option>
-                    </select>
-                </div>
-                <div class="input-group-login" id="container-solicitar-unidade">
-                    <label>Unidade de Saúde</label>
-                    <select id="solicitar-unidade">
-                        <option value="">Digite o município primeiro...</option>
-                    </select>
-                </div>
-
-                <button type="button" class="btn-salvar" onclick="enviarSolicitacaoAcesso()">
-                    <i class="fa-solid fa-paper-plane"></i> Enviar Solicitação
-                </button>
-            </form>
         </div>
     </div>
     <script src="app.js"></script>
-    <script src="autenticacao.js"></script>
-    <script src="cadastro-user.js"></script>
 </body>
 
 </html>
