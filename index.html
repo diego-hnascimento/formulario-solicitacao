@@ -141,11 +141,21 @@
                             <label for="patient-cpf">CPF <span class="required">*</span></label>
                             <input type="text" id="patient-cpf" name="patient-cpf" placeholder="000.000.000-00"
                                 maxlength="14" required>
-                            <div class="error-message" id="error-patient-cpf">CPF inválido</div>
+                            <div class="error-message" id="error-patient-cpf">Obrigatório CPF ou CNS válido</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="patient-cns">CNS do Paciente</label>
+                            <input type="text" id="patient-cns" placeholder="000 0000 0000 0000" maxlength="18">
+                            <span class="error-message" id="error-patient-cns">Informe um CNS válido</span>
                         </div>
                         <div class="form-group">
                             <label for="patient-birthdate">Data de Nascimento <span class="required">*</span></label>
                             <input type="date" id="patient-birthdate" name="patient-birthdate" required>
+                            <div class="error-message" id="error-patient-birthdate">Data inválida</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="date-solicitacao">Data de Entrada na Solicitação</label>
+                            <input type="date" id="date-solicitacao" name="date-solicitacao">
                             <div class="error-message" id="error-patient-birthdate">Data inválida</div>
                         </div>
                     </div>
@@ -254,7 +264,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Comprovante de Residência <span class="required">*</span></label>
+                        <label>Comprovante de Residência</label>
                         <div class="upload-area residence" id="upload-residence"
                             onclick="document.getElementById('file-residence').click()">
                             <div class="upload-icon">
@@ -382,7 +392,8 @@
                         </div>
 
                         <div class="confirmation-buttons">
-                            <a href="https://monitoramento-nirsevimabe.vercel.app/status.html" target="_blank" class="btn-restart">Acompanhar Solicitação</a>
+                            <a href="https://monitoramento-nirsevimabe.vercel.app/status.html" target="_blank"
+                                class="btn-restart">Acompanhar Solicitação</a>
                             <button type="button" class="btn-restart" onclick="startNewForm()">
                                 <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />

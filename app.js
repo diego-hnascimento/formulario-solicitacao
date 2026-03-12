@@ -98,7 +98,7 @@ const cidadesPorRegiao = {
     "3": ["Água Preta", "Amaraji", "Barreiros", "Belém de Maria", "Catende", "Cortês", "Escada", "Gameleira", "Jaqueira", "Joaquim Nabuco", "Lagoa dos Gatos", "Maraial", "Palmares", "Primavera", "Quipapá", "Ribeirão", "Rio Formoso", "São Benedito do Sul", "São José da Coroa Grande", "Sirinhaém", "Tamandaré", "Xexéu"],
     "4": ["Agrestina", "Alagoinha", "Altinho", "Barra de Guabiraba", "Belo Jardim", "Bezerros", "Bonito", "Brejo da Madre de Deus", "Cachoeirinha", "Camocim de São Félix", "Caruaru", "Cupira", "Frei Miguelinho", "Gravatá", "Ibirajuba", "Jataúba", "Jurema", "Panelas", "Pesqueira", "Poção", "Riacho das Almas", "Sairé", "Sanharó", "Santa Cruz do Capibaribe", "Santa Maria do Cambucá", "São Bento do Una", "São Caitano", "São Joaquim do Monte", "Tacaimbó", "Taquaritinga do Norte", "Toritama", "Vertentes"],
     "5": ["Águas Belas", "Angelim", "Bom Conselho", "Brejão", "Caetés", "Calçado", "Canhotinho", "Capoeiras", "Correntes", "Garanhuns", "Iati", "Itaíba", "Jucati", "Jupi", "Lagoa do Ouro", "Lajedo", "Palmeirina", "Paranatama", "Saloá", "São João", "Terezinha"],
-    "6": ["Arcoverde", "Buíque", "Custódia", "Ibimirim", "Inajá", "Jatobá", "Manari", "Pedra", "Petrolândia", "Sertânia", "Tacaratu","Tupanatinga", "Venturosa"],
+    "6": ["Arcoverde", "Buíque", "Custódia", "Ibimirim", "Inajá", "Jatobá", "Manari", "Pedra", "Petrolândia", "Sertânia", "Tacaratu", "Tupanatinga", "Venturosa"],
     "7": ["Belém do São Francisco", "Cedro", "Mirandiba", "Salgueiro", "Serrita", "Terra Nova", "Verdejante"],
     "8": ["Afrânio", "Cabrobó", "Dormentes", "Lagoa Grande", "Orocó", "Petrolina", "Santa Maria da Boa Vista"],
     "9": ["Araripina", "Bodocó", "Exu", "Granito", "Ipubi", "Moreilândia", "Ouricuri", "Parnamirim", "Santa Cruz", "Santa Filomena", "Trindade"],
@@ -127,13 +127,23 @@ function atualizarMunicipios(regiaoId, municipioSelectId) {
 }
 
 function goToStep(step) {
-    if (step === currentStep + 1 && !validateCurrentStep()) {
-        return;
+    // Se estiver tentando avançar, valida o passo atual
+    if (step > currentStep) {
+        if (!validateCurrentStep()) {
+            // Se as notificações bonitas (Toast) que criamos antes estiverem ativas:
+            if (typeof mostrarNotificacao === 'function') {
+                mostrarNotificacao("Por favor, preencha todos os campos obrigatórios e anexe os documentos.", "error");
+            } else {
+                mostrarNotificacao("Por favor, preencha todos os campos obrigatórios.", "warning");
+            }
+            return;
+        }
     }
 
     saveCurrentStepData();
     currentStep = step;
     updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function updateUI() {
@@ -183,9 +193,11 @@ function validateCurrentStep() {
         if (!prof.municipality) errors.push('prof-municipality');
         if (!prof.estabelecimento) errors.push('prof-estabelecimento');
     } else if (currentStep === 2) {
+        const patientCpf = document.getElementById('patient-cpf').value.trim();
+        const patientCns = document.getElementById('patient-cns').value.trim();
+
         const patient = {
             fullName: document.getElementById('patient-fullname').value,
-            cpf: document.getElementById('patient-cpf').value,
             birthDate: document.getElementById('patient-birthdate').value,
             region: document.getElementById('patient-region').value,
             municipality: document.getElementById('patient-municipality').value,
@@ -194,17 +206,26 @@ function validateCurrentStep() {
         };
 
         if (!patient.fullName) errors.push('patient-fullname');
-        if (!patient.cpf || !isValidCPF(patient.cpf)) errors.push('patient-cpf');
         if (!patient.birthDate) errors.push('patient-birthdate');
         if (!patient.region) errors.push('patient-region');
         if (!patient.municipality) errors.push('patient-municipality');
         if (!patient.condition) errors.push('patient-condition');
         if (!patient.peso) errors.push('patient-peso');
+
+        const temCpfValido = patientCpf && isValidCPF(patientCpf);
+        const temCnsValido = patientCns && patientCns.replace(/\s/g, '').length === 15;
+
+        if (!temCpfValido && !temCnsValido) {
+            // Se ambos estiverem errados ou vazios, marca erro nos dois
+            errors.push('patient-cpf');
+            errors.push('patient-cns');
+            mostrarNotificacao("É necessário informar o CPF ou o CNS do paciente.", "warning");
+        }
     } else if (currentStep === 3) {
-        if (!document.getElementById('file-photo').files.length) errors.push('file-photo');
-        if (!document.getElementById('file-residence').files.length) errors.push('file-residence');
-        if (!document.getElementById('file-medical').files.length) errors.push('file-medical');
-        if (!document.getElementById('file-caderneta').files.length) errors.push('file-caderneta');
+        const docs = formData.documentation;
+        if (!docs.photoDocument) errors.push('file-photo');
+        if (!docs.medicalReport) errors.push('file-medical');
+        if (!docs.cadernetaVacinacao) errors.push('file-caderneta');
     }
 
     displayErrors(errors);
@@ -243,7 +264,9 @@ function saveCurrentStepData() {
         formData.patient = {
             fullName: document.getElementById('patient-fullname').value,
             cpf: document.getElementById('patient-cpf').value,
+            cns: document.getElementById('patient-cns').value,
             birthDate: document.getElementById('patient-birthdate').value,
+            entradaDate: document.getElementById('date-solicitacao').value,
             region: document.getElementById('patient-region').value,
             municipality: document.getElementById('patient-municipality').value,
             medicalCondition: document.getElementById('patient-condition').value,
@@ -305,6 +328,10 @@ function formatPhone(value) {
 }
 
 async function finishForm() {
+    if (!validateCurrentStep()) {
+        return mostrarNotificacao("Anexe todos os documentos obrigatórios antes de finalizar.", "error");
+    }
+
     try {
         const btn = document.querySelector('.btn-next');
         const loading = document.getElementById('loading-overlay');
@@ -332,8 +359,10 @@ async function finishForm() {
 
             // Dados do Paciente
             paciente_nome: formData.patient.fullName,
-            paciente_cpf: formData.patient.cpf,
+            paciente_cpf: formData.patient.cpf || null,
+            paciente_cns: formData.patient.cns || null,
             paciente_nascimento: formData.patient.birthDate,
+            data_entrada: formData.patient.entradaDate,
             paciente_regional: formData.patient.region,
             paciente_municipio: formData.patient.municipality,
             paciente_condicao: formData.patient.medicalCondition,
@@ -347,8 +376,6 @@ async function finishForm() {
 
             status: 'Pendente'
         };
-
-        console.log("Enviando tudo para o banco:", payload);
 
         // 3. Salva na tabela 'solicitacoes'
         await salvarNoSupabase(payload);
@@ -364,7 +391,7 @@ async function finishForm() {
 
     } catch (error) {
         console.error("Erro completo:", error);
-        alert("❌ Erro ao finalizar solicitação.");
+        mostrarNotificacao("Erro ao finalizar solicitação.", "error");
         const btn = document.querySelector('.btn-next');
         btn.innerText = "Confirmar Solicitação";
         btn.disabled = false;
@@ -468,6 +495,15 @@ document.getElementById('patient-cpf').addEventListener('input', (e) => {
     e.target.value = formatCPF(e.target.value);
 });
 
+document.getElementById('patient-cns').addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+    if (v.length > 15) v = v.slice(0, 15);     // Limita a 15 números
+    
+    // Formata em grupos de 3: 000 0000 0000 0000
+    let formatted = v.replace(/^(\d{3})(\d{4})(\d{4})(\d{4}).*/, '$1 $2 $3 $4');
+    e.target.value = formatted;
+});
+
 document.getElementById('prof-phone').addEventListener('input', (e) => {
     e.target.value = formatPhone(e.target.value);
 });
@@ -519,3 +555,35 @@ document.getElementById('file-medical').addEventListener('change', (e) => {
         document.getElementById('upload-medical').classList.add('has-file');
     }
 });
+
+// Substitui o alert()
+function mostrarNotificacao(mensagem, tipo = 'success') {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${tipo}`;
+
+    const icones = {
+        success: 'fa-circle-check',
+        error: 'fa-circle-xmark',
+        warning: 'fa-triangle-exclamation'
+    };
+
+    toast.innerHTML = `
+        <i class="fa-solid ${icones[tipo]}"></i>
+        <span>${mensagem}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Remove automaticamente após 4 segundos
+    setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.5s ease-in forwards';
+        setTimeout(() => toast.remove(), 500);
+    }, 4000);
+}
